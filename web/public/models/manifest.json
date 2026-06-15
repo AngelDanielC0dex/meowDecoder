@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "modelVersion": "mlp-synthetic-2026.06.0",
+  "fileName": "model.onnx",
+  "classes": [
+    "meow",
+    "purr",
+    "trill",
+    "hiss",
+    "growl",
+    "yowl"
+  ],
+  "input": {
+    "kind": "log-mel",
+    "sampleRate": 16000,
+    "nMels": 64,
+    "nFrames": 96,
+    "windowS": 1.552
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "meta": {
+    "siteName": "MeowDecoder",
+    "tagline": "Feline acoustic intelligence",
+    "homeTitle": "MeowDecoder — Analyze and interpret your cat's vocalizations",
+    "homeDescription": "Feline acoustic analysis platform. Record or upload a sound and find out whether your cat is meowing, purring, hissing or yowling, with honest contextual interpretation.",
+    "analyzeTitle": "Analyze your cat's sound — MeowDecoder",
+    "analyzeDescription": "Record or upload audio and get a classification of your cat's vocalization with a confidence level."
+  },
+  "nav": {
+    "home": "Home",
+    "analyze": "Analyze",
+    "cats": "My cats",
+    "history": "History",
+    "sounds": "Sounds",
+    "skipToContent": "Skip to main content"
+  },
+  "home": {
+    "heroTitle": "Understand what your cat is trying to tell you",
+    "heroSubtitle": "Record or upload a sound and get a clear acoustic analysis of its vocalization. No magic promises: an honest classification with its confidence level.",
+    "ctaPrimary": "Analyze a sound",
+    "ctaSecondary": "How it works",
+    "howItWorksTitle": "How it works",
+    "step1Title": "Capture the sound",
+    "step1Body": "Record with the microphone or upload an audio file. Processing happens on your device.",
+    "step2Title": "Acoustic analysis",
+    "step2Body": "We extract features from the sound — pitch, rhythm, texture — without your audio leaving the browser.",
+    "step3Title": "Interpretation",
+    "step3Body": "You get the most likely vocalization, alternatives, and an interpretation of its context.",
+    "soundsTitle": "Vocalization types",
+    "soundsSubtitle": "Explore the feline vocalizations we recognize.",
+    "faqTitle": "Frequently asked questions",
+    "scienceTitle": "Scientific transparency",
+    "scienceBody": "MeowDecoder is a vocalization classifier, not a literal translator. Feline bioacoustics research supports classification by type and approximate contextual interpretation, not word-for-word translation. When the signal is ambiguous, we tell you.",
+    "privacyNote": "Your audio is processed locally and is not uploaded to any server unless you allow it.",
+    "testimonialsTitle": "What users say",
+    "accountCtaTitle": "Create an account to save your cats' history",
+    "accountCtaBody": "Sync your analyses across devices and keep each cat's corrections. Optional: the app works without an account.",
+    "accountCtaLink": "Create a free account"
+  },
+  "analyze": {
+    "title": "Analyze a sound",
+    "recordTab": "Record",
+    "uploadTab": "Upload file",
+    "recordHint": "Tap to record your cat's sound. We'll ask for microphone permission.",
+    "startRecording": "Start recording",
+    "stopRecording": "Stop",
+    "cancel": "Cancel",
+    "retry": "Retry",
+    "recording": "Recording…",
+    "uploadHint": "Drag an audio file or select one (WAV, MP3, M4A).",
+    "selectFile": "Select file",
+    "analyzing": "Analyzing…",
+    "selectCat": "Cat (optional)",
+    "noCat": "Unassigned",
+    "keepAudio": "Save the audio to my history",
+    "stageDecoding": "Decoding audio",
+    "stageResampling": "Preparing signal",
+    "stageTrimming": "Normalizing",
+    "stageSegmenting": "Detecting vocalizations",
+    "stageExtracting": "Extracting features",
+    "stageClassifying": "Classifying",
+    "errorNoVocalization": "We couldn't detect a clear vocalization. Try a closer recording or less background noise.",
+    "errorMicDenied": "We don't have microphone permission. Enable it in your browser settings and retry.",
+    "errorGeneric": "Something went wrong analyzing the audio. Please try again.",
+    "permissionExplain": "We need microphone access only to record this sound. The audio is processed on your device."
+  },
+  "result": {
+    "title": "Analysis result",
+    "primaryLabel": "Primary vocalization",
+    "confidence": "Confidence",
+    "alternatives": "Other possibilities",
+    "certaintyHigh": "High certainty",
+    "certaintyMedium": "Medium certainty",
+    "certaintyLow": "Low certainty",
+    "ambiguousWarning": "The signal is ambiguous. Treat this as guidance, not a certainty.",
+    "technicalDetails": "Technical details",
+    "duration": "Duration",
+    "pitch": "Pitch (f0)",
+    "brightness": "Spectral brightness",
+    "modulation": "Modulation",
+    "engineLabel": "Engine",
+    "contextTitle": "Possible context",
+    "feedbackTitle": "Was this correct?",
+    "feedbackCorrect": "Correct",
+    "feedbackPartial": "Partially",
+    "feedbackIncorrect": "Incorrect",
+    "feedbackCorrectionPrompt": "What was it actually?",
+    "feedbackThanks": "Thanks — your correction helps us improve.",
+    "feedbackShare": "Share this audio to improve the model",
+    "analyzeAnother": "Analyze another sound",
+    "notScience": "This is an interpretive guide, not a veterinary diagnosis."
+  },
+  "cats": {
+    "title": "My cats",
+    "empty": "You haven't added any cats yet. Creating a profile improves interpretation over time.",
+    "add": "Add cat",
+    "edit": "Edit",
+    "delete": "Delete",
+    "name": "Name",
+    "birthYear": "Birth year",
+    "breed": "Breed",
+    "sex": "Sex",
+    "sexFemale": "Female",
+    "sexMale": "Male",
+    "sexUnknown": "Unknown",
+    "traits": "Traits",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirmDelete": "Delete this cat and its associated data?"
+  },
+  "history": {
+    "title": "History",
+    "empty": "No saved analyses yet.",
+    "filterByCat": "Filter by cat",
+    "all": "All",
+    "playAudio": "Play",
+    "deleteEntry": "Delete"
+  },
+  "ads": {
+    "sponsored": "Sponsored",
+    "cta": "See more",
+    "meow": {
+      "title": "Feeders & dispensers",
+      "desc": "Make your cat's meal routines easier."
+    },
+    "purr": {
+      "title": "Beds & blankets",
+      "desc": "Cozy spots for their naps."
+    },
+    "trill": {
+      "title": "Interactive toys",
+      "desc": "Stimulation and play for active cats."
+    },
+    "unknown": {
+      "title": "Snacks & treats",
+      "desc": "Little treats for your cat."
+    }
+  },
+  "common": {
+    "loading": "Loading…",
+    "close": "Close",
+    "back": "Back",
+    "language": "Language",
+    "errorTitle": "Something went wrong",
+    "errorBody": "An unexpected error occurred. You can try again.",
+    "errorRetry": "Try again"
+  }
+}

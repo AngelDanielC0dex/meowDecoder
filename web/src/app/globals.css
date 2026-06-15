@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand palette — warm, trustworthy, high contrast (WCAG AA on white) */
+  --color-brand-50: #fdf6ef;
+  --color-brand-100: #f9e8d8;
+  --color-brand-500: #c2571b;
+  --color-brand-600: #a34715; /* 4.8:1 on white */
+  --color-brand-700: #83390f;
+  --color-ink-900: #1c1917;
+  --color-ink-600: #57534e;
+  --color-surface: #fffdfa;
+
+  /* Fluid typography: scales between 360px and 1280px viewports */
+  --text-display: clamp(2rem, 1.2rem + 3.5vw, 3.5rem);
+  --text-title: clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem);
+  --text-subtitle: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+
+  /* Responsive spacing unit */
+  --spacing-section: clamp(3rem, 2rem + 4vw, 6rem);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-ink-900);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Visible, consistent focus for keyboard users */
+:focus-visible {
+  outline: 3px solid var(--color-brand-600);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect user motion preferences (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Skip link (hidden until focused) */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--color-brand-700);
+  color: white;
+  padding: 0.75rem 1.25rem;
+}
+.skip-link:focus {
+  left: 0.5rem;
+  top: 0.5rem;
+}

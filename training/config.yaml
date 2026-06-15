@@ -1,0 +1,35 @@
+# Single source of truth for the training run. Audio/feature params MUST match
+# web/src/infrastructure/dsp/constants.ts and log-mel.ts (CI parity test).
+audio:
+  sample_rate: 16000
+  frame_size: 512
+  hop_size: 256
+  n_mels: 64
+  n_frames: 96       # ~1.5 s window at 16 kHz / 256 hop
+  window_s: 1.5
+  f_min: 50
+
+classes: [meow, purr, trill, hiss, growl, yowl]
+
+train:
+  batch_size: 32
+  epochs: 60
+  lr: 0.0008
+  weight_decay: 0.0001
+  val_folds: 5
+  seed: 42
+  # Split by emitting cat id, never by sample, to avoid identity leakage.
+  group_by: cat_id
+  early_stopping_patience: 10
+
+augment:
+  time_shift_ms: 100
+  noise_snr_db: [10, 30]
+  pitch_semitones: [-1, 1]
+  spec_augment: true
+
+export:
+  model_version: cnn-onnx-2026.06.0
+  opset: 17
+  quantize_int8: true
+  parity_tolerance: 0.002

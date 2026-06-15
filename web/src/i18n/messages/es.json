@@ -1,0 +1,149 @@
+{
+  "meta": {
+    "siteName": "MeowDecoder",
+    "tagline": "Inteligencia acústica felina",
+    "homeTitle": "MeowDecoder — Analiza e interpreta las vocalizaciones de tu gato",
+    "homeDescription": "Plataforma de análisis acústico felino. Graba o sube un sonido y descubre si tu gato maúlla, ronronea, bufa o aúlla, con interpretación contextual honesta.",
+    "analyzeTitle": "Analizar el sonido de tu gato — MeowDecoder",
+    "analyzeDescription": "Graba o sube un audio y obtén una clasificación de la vocalización de tu gato con su nivel de confianza."
+  },
+  "nav": {
+    "home": "Inicio",
+    "analyze": "Analizar",
+    "cats": "Mis gatos",
+    "history": "Historial",
+    "sounds": "Sonidos",
+    "skipToContent": "Saltar al contenido principal"
+  },
+  "home": {
+    "heroTitle": "Entiende lo que tu gato intenta decirte",
+    "heroSubtitle": "Graba o sube un sonido y obtén un análisis acústico claro de su vocalización. Sin promesas mágicas: clasificación honesta con su nivel de confianza.",
+    "ctaPrimary": "Analizar un sonido",
+    "ctaSecondary": "Cómo funciona",
+    "howItWorksTitle": "Cómo funciona",
+    "step1Title": "Captura el sonido",
+    "step1Body": "Graba con el micrófono o sube un archivo de audio. El procesamiento ocurre en tu dispositivo.",
+    "step2Title": "Análisis acústico",
+    "step2Body": "Extraemos características del sonido —tono, ritmo, textura— sin que tu audio salga del navegador.",
+    "step3Title": "Interpretación",
+    "step3Body": "Recibes la vocalización más probable, alternativas y una interpretación de su contexto.",
+    "soundsTitle": "Tipos de vocalización",
+    "soundsSubtitle": "Explora las vocalizaciones felinas que reconocemos.",
+    "faqTitle": "Preguntas frecuentes",
+    "scienceTitle": "Transparencia científica",
+    "scienceBody": "MeowDecoder es un clasificador de vocalizaciones, no un traductor literal. La investigación en bioacústica felina respalda la clasificación por tipo y la interpretación aproximada del contexto, no una traducción palabra por palabra. Cuando la señal es ambigua, te lo decimos.",
+    "privacyNote": "Tu audio se procesa localmente y no se sube a ningún servidor salvo que tú lo autorices.",
+    "testimonialsTitle": "Lo que dicen quienes lo usan",
+    "accountCtaTitle": "Crea una cuenta para guardar el historial de tus gatos",
+    "accountCtaBody": "Sincroniza tus análisis entre dispositivos y conserva las correcciones de cada gato. Opcional: la app funciona sin cuenta.",
+    "accountCtaLink": "Crear cuenta gratis"
+  },
+  "analyze": {
+    "title": "Analizar un sonido",
+    "recordTab": "Grabar",
+    "uploadTab": "Subir archivo",
+    "recordHint": "Pulsa para grabar el sonido de tu gato. Te pediremos permiso para el micrófono.",
+    "startRecording": "Empezar a grabar",
+    "stopRecording": "Detener",
+    "cancel": "Cancelar",
+    "retry": "Reintentar",
+    "recording": "Grabando…",
+    "uploadHint": "Arrastra un archivo de audio o selecciónalo (WAV, MP3, M4A).",
+    "selectFile": "Seleccionar archivo",
+    "analyzing": "Analizando…",
+    "selectCat": "Gato (opcional)",
+    "noCat": "Sin asignar",
+    "keepAudio": "Guardar el audio en mi historial",
+    "stageDecoding": "Decodificando audio",
+    "stageResampling": "Preparando señal",
+    "stageTrimming": "Normalizando",
+    "stageSegmenting": "Detectando vocalizaciones",
+    "stageExtracting": "Extrayendo características",
+    "stageClassifying": "Clasificando",
+    "errorNoVocalization": "No detectamos ninguna vocalización clara. Prueba con una grabación más cercana o con menos ruido de fondo.",
+    "errorMicDenied": "No tenemos permiso para el micrófono. Actívalo en los ajustes del navegador y reintenta.",
+    "errorGeneric": "Algo salió mal al analizar el audio. Inténtalo de nuevo.",
+    "permissionExplain": "Necesitamos acceso al micrófono solo para grabar este sonido. El audio se procesa en tu dispositivo."
+  },
+  "result": {
+    "title": "Resultado del análisis",
+    "primaryLabel": "Vocalización principal",
+    "confidence": "Confianza",
+    "alternatives": "Otras posibilidades",
+    "certaintyHigh": "Alta certeza",
+    "certaintyMedium": "Certeza media",
+    "certaintyLow": "Baja certeza",
+    "ambiguousWarning": "La señal es ambigua. Tómalo como una orientación, no como una certeza.",
+    "technicalDetails": "Detalles técnicos",
+    "duration": "Duración",
+    "pitch": "Tono (f0)",
+    "brightness": "Brillo espectral",
+    "modulation": "Modulación",
+    "engineLabel": "Motor",
+    "contextTitle": "Posible contexto",
+    "feedbackTitle": "¿Fue correcto?",
+    "feedbackCorrect": "Correcto",
+    "feedbackPartial": "Parcialmente",
+    "feedbackIncorrect": "Incorrecto",
+    "feedbackCorrectionPrompt": "¿Qué era en realidad?",
+    "feedbackThanks": "Gracias, tu corrección nos ayuda a mejorar.",
+    "feedbackShare": "Compartir este audio para mejorar el modelo",
+    "analyzeAnother": "Analizar otro sonido",
+    "notScience": "Esto es una interpretación orientativa, no un diagnóstico veterinario."
+  },
+  "cats": {
+    "title": "Mis gatos",
+    "empty": "Aún no has añadido ningún gato. Crear un perfil mejora la interpretación con el tiempo.",
+    "add": "Añadir gato",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "name": "Nombre",
+    "birthYear": "Año de nacimiento",
+    "breed": "Raza",
+    "sex": "Sexo",
+    "sexFemale": "Hembra",
+    "sexMale": "Macho",
+    "sexUnknown": "No lo sé",
+    "traits": "Rasgos",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "confirmDelete": "¿Eliminar este gato y sus datos asociados?"
+  },
+  "history": {
+    "title": "Historial",
+    "empty": "Todavía no hay análisis guardados.",
+    "filterByCat": "Filtrar por gato",
+    "all": "Todos",
+    "playAudio": "Reproducir",
+    "deleteEntry": "Eliminar"
+  },
+  "ads": {
+    "sponsored": "Patrocinado",
+    "cta": "Ver más",
+    "meow": {
+      "title": "Comederos y dispensadores",
+      "desc": "Facilita las rutinas de comida de tu gato."
+    },
+    "purr": {
+      "title": "Camas y mantas",
+      "desc": "Rincones cómodos para sus siestas."
+    },
+    "trill": {
+      "title": "Juguetes interactivos",
+      "desc": "Estimulación y juego para gatos activos."
+    },
+    "unknown": {
+      "title": "Snacks y premios",
+      "desc": "Pequeños caprichos para tu gato."
+    }
+  },
+  "common": {
+    "loading": "Cargando…",
+    "close": "Cerrar",
+    "back": "Volver",
+    "language": "Idioma",
+    "errorTitle": "Algo salió mal",
+    "errorBody": "Ha ocurrido un error inesperado. Puedes reintentar.",
+    "errorRetry": "Reintentar"
+  }
+}

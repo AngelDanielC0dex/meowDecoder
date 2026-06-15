@@ -1,0 +1,140 @@
+"use client";
+
+import { useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
+import type { AnalysisSession } from "@/domain/analysis/session";
+import type { CertaintyLevel } from "@/domain/analysis/classification";
+import { getVocalizationByClass } from "@/content/vocalizations";
+import { formatProbability, formatHz, formatDuration } from "@/presentation/formatters";
+import { ConfidenceBar } from "./ConfidenceBar";
+import { FeedbackForm } from "./FeedbackForm";
+import { ContextualAd } from "./ContextualAd";
+import { Button } from "@/presentation/components/ui/Button";
+import type { AppLocale } from "@/i18n/routing";
+
+const CERTAINTY_KEY: Record<CertaintyLevel, "certaintyHigh" | "certaintyMedium" | "certaintyLow"> =
+  {
+    high: "certaintyHigh",
+    medium: "certaintyMedium",
+    low: "certaintyLow",
+  };
+
+export function ResultCard({
+  session,
+  onAnalyzeAnother,
+}: {
+  session: AnalysisSession;
+  onAnalyzeAnother: () => void;
+}) {
+  const t = useTranslations("result");
+  const locale = useLocale() as AppLocale;
+  const [showTech, setShowTech] = useState(false);
+  const { classification, segment } = session;
+  const { primary, alternatives, certainty, ambiguous } = classification;
+
+  const content = getVocalizationByClass(primary.cls);
+  const i18n = content?.i18n[locale];
+  const f = segment.features;
+
+  return (
+    <article aria-labelledby="result-heading" className="flex flex-col gap-6">
+      <header className="text-center">
+        <p className="text-sm uppercase tracking-wide text-ink-600">{t("primaryLabel")}</p>
+        <h2 id="result-heading" className="mt-1 text-title font-bold">
+          <span aria-hidden="true" className="mr-2 text-4xl">
+            {content?.emoji ?? "❓"}
+          </span>
+          {i18n?.name ?? primary.cls}
+        </h2>
+        {i18n && <p className="mt-2 text-subtitle text-ink-600">{i18n.shortMeaning}</p>}
+      </header>
+
+      {ambiguous && (
+        <p role="alert" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
+          ⚠️ {t("ambiguousWarning")}
+        </p>
+      )}
+
+      <ConfidenceBar
+        probability={primary.probability}
+        certainty={certainty}
+        label={`${t("confidence")} — ${t(CERTAINTY_KEY[certainty])}`}
+      />
+      
+      <ContextualAd predictedClass={primary.cls} />
+
+      {alternatives.length > 0 && (
+        <section aria-labelledby="alt-heading">
+          <h3 id="alt-heading" className="mb-2 text-sm font-semibold">
+            {t("alternatives")}
+          </h3>
+          <ul className="space-y-2">
+            {alternatives.map((alt) => {
+              const altContent = getVocalizationByClass(alt.cls);
+              return (
+                <li key={alt.cls} className="flex items-center justify-between text-sm">
+                  <span>
+                    {altContent?.emoji} {altContent?.i18n[locale].name ?? alt.cls}
+                  </span>
+                  <span className="text-ink-600">{formatProbability(alt.probability)}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
+      {i18n && (
+        <section aria-labelledby="context-heading">
+          <h3 id="context-heading" className="mb-1 text-sm font-semibold">
+            {t("contextTitle")}
+          </h3>
+          <p className="text-ink-600">{i18n.description}</p>
+          <ul className="mt-2 flex flex-wrap gap-2">
+            {i18n.contexts.map((c) => (
+              <li
+                key={c}
+                className="rounded-full bg-brand-50 px-3 py-1 text-xs text-brand-700"
+              >
+                {c}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <div>
+        <button
+          type="button"
+          aria-expanded={showTech}
+          onClick={() => setShowTech((s) => !s)}
+          className="text-sm font-medium text-brand-700 underline"
+        >
+          {t("technicalDetails")}
+        </button>
+        {showTech && (
+          <dl className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+            <dt className="text-ink-600">{t("duration")}</dt>
+            <dd>{formatDuration(f.durationS)}</dd>
+            <dt className="text-ink-600">{t("pitch")}</dt>
+            <dd>{formatHz(f.f0Hz)}</dd>
+            <dt className="text-ink-600">{t("brightness")}</dt>
+            <dd>{formatHz(f.spectralCentroidHz)}</dd>
+            <dt className="text-ink-600">{t("modulation")}</dt>
+            <dd>{formatHz(f.amRateHz)}</dd>
+            <dt className="text-ink-600">{t("engineLabel")}</dt>
+            <dd>{classification.modelVersion}</dd>
+          </dl>
+        )}
+      </div>
+
+      <FeedbackForm session={session} />
+
+      <p className="text-center text-xs text-ink-600">{t("notScience")}</p>
+
+      <Button size="lg" onClick={onAnalyzeAnother} className="self-center">
+        {t("analyzeAnother")}
+      </Button>
+    </article>
+  );
+}
