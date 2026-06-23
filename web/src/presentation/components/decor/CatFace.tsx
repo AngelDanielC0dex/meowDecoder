@@ -30,16 +30,12 @@ export function CatFace({
           <div className={styles.eyePupil} />
         </div>
         <div className={styles.muzzle} />
-        <div className={`${styles.whiskers} ${styles.whiskersLeft}`}>
-          <span className={styles.hair} />
-          <span className={styles.hair} />
-          <span className={styles.hair} />
-        </div>
-        <div className={`${styles.whiskers} ${styles.whiskersRight}`}>
-          <span className={styles.hair} />
-          <span className={styles.hair} />
-          <span className={styles.hair} />
-        </div>
+        <div className={`${styles.whisker} ${styles.whiskerLeft} ${styles.whiskerLeft1}`} />
+        <div className={`${styles.whisker} ${styles.whiskerLeft} ${styles.whiskerLeft2}`} />
+        <div className={`${styles.whisker} ${styles.whiskerLeft} ${styles.whiskerLeft3}`} />
+        <div className={`${styles.whisker} ${styles.whiskerRight} ${styles.whiskerRight1}`} />
+        <div className={`${styles.whisker} ${styles.whiskerRight} ${styles.whiskerRight2}`} />
+        <div className={`${styles.whisker} ${styles.whiskerRight} ${styles.whiskerRight3}`} />
       </div>
     </div>
   );

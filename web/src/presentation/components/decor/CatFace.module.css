@@ -169,57 +169,56 @@
   border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
 }
 
-/* Whiskers: three fine hairs each side, fanning out from the muzzle. The
-   container sits just past the muzzle edge so the hairs extend clearly
-   outward; the fan angle is wide enough to read as "outward", not "smile".
-   Colored like the muzzle so they contrast the face in both themes. */
-.whiskers {
-  position: absolute;
-  top: 60%;
-  width: 34%;
-  height: 22%;
-}
-.whiskersLeft {
-  right: 56%;
-}
-.whiskersRight {
-  left: 56%;
-}
-.hair {
+/* Whiskers: six fine lines, three per side, fanning OUTWARD from the muzzle.
+   Each whisker is positioned individually with an explicit angle so the fan
+   is unambiguous. The anchor (transform-origin) is the inner end (near the
+   muzzle); the outer end sweeps up/straight/down to create the fan. */
+.whisker {
   position: absolute;
   height: 2px;
-  width: 100%;
-  border-radius: 2px;
+  width: 32%;
   background: var(--cat-muzzle);
-}
-.hair:nth-child(1) {
-  top: 8%;
-}
-.hair:nth-child(2) {
-  top: 50%;
-}
-.hair:nth-child(3) {
-  top: 92%;
-}
-.whiskersLeft .hair {
-  right: 0;
+  border-radius: 2px;
   transform-origin: right center;
 }
-.whiskersRight .hair {
-  left: 0;
+
+/* Left side: anchor on the right (near muzzle), tip on the left.
+   Top whisker tilts up-left (-18°), middle stays horizontal, bottom tilts
+   down-left (+18°). */
+.whiskerLeft {
+  right: 50%;
+}
+.whiskerLeft1 {
+  top: 60%;
+  transform: rotate(-18deg);
+}
+.whiskerLeft2 {
+  top: 64%;
+  transform: rotate(0deg);
+}
+.whiskerLeft3 {
+  top: 68%;
+  transform: rotate(18deg);
+}
+
+/* Right side: anchor on the left (near muzzle), tip on the right.
+   Same angles as the left side — the rotation is applied from the inner
+   anchor, so the outer tip sweeps the same way. */
+.whiskerRight {
+  left: 50%;
   transform-origin: left center;
 }
-.whiskersLeft .hair:nth-child(1) {
-  transform: rotate(-22deg);
+.whiskerRight1 {
+  top: 60%;
+  transform: rotate(18deg);
 }
-.whiskersLeft .hair:nth-child(3) {
-  transform: rotate(22deg);
+.whiskerRight2 {
+  top: 64%;
+  transform: rotate(0deg);
 }
-.whiskersRight .hair:nth-child(1) {
-  transform: rotate(22deg);
-}
-.whiskersRight .hair:nth-child(3) {
-  transform: rotate(-22deg);
+.whiskerRight3 {
+  top: 68%;
+  transform: rotate(-18deg);
 }
 
 @keyframes catBlink {
