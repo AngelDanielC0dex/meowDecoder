@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import NextLink from "next/link";
 import { routing, type AppLocale } from "@/i18n/routing";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
@@ -128,12 +129,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <div className="mt-4 max-w-md rounded-xl bg-brand-100/50 p-4 border border-brand-200 text-sm">
                 <p className="font-semibold text-brand-900 dark:text-brand-200">{t("accountCtaTitle")}</p>
                 <p className="mt-1 text-ink-600">{t("accountCtaBody")}</p>
-                <Link
+                <NextLink
                   href="/auth/signin"
                   className="mt-2 inline-block font-medium text-brand-700 hover:underline dark:text-brand-300"
                 >
                   {t("accountCtaLink")} →
-                </Link>
+                </NextLink>
               </div>
             )}
           </div>

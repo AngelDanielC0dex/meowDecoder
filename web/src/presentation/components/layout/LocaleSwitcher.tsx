@@ -1,21 +1,12 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, useTransition } from "react";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
 const LABELS: Record<string, string> = { es: "Español", en: "English" };
-
-/** Globe glyph (circle + meridians), inherits `currentColor`. */
-function GlobeIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" />
-      <path d="M3 12h18M12 3c2.6 2.7 2.6 15.3 0 18M12 3c-2.6 2.7-2.6 15.3 0 18" />
-    </svg>
-  );
-}
 
 /**
  * Language selector as an icon-triggered popover (disclosure pattern). The
@@ -72,7 +63,15 @@ export function LocaleSwitcher() {
         aria-label={t("changeLanguage")}
         className="interactive flex min-h-9 items-center gap-1.5 rounded-lg border border-brand-100 bg-surface px-2.5 py-1.5 text-sm text-ink-700 hover:bg-brand-50 hover:text-ink-900"
       >
-        <GlobeIcon />
+        <Image
+          src="/gato-internacional.svg"
+          alt=""
+          width={16}
+          height={16}
+          unoptimized
+          className="size-4"
+          aria-hidden="true"
+        />
         <span className="hidden sm:inline">{LABELS[locale] ?? locale}</span>
         <svg
           viewBox="0 0 24 24"

@@ -12,13 +12,13 @@ export async function SiteFooter() {
             <CatLogo className="h-6 w-auto" />
             MeowDecoder
           </p>
-          <p className="mt-2 text-sm text-ink-600">{t("meta.tagline")}</p>
+          <p className="mt-2 text-sm text-brand-700 dark:text-brand-300">{t("meta.tagline")}</p>
           <p className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-surface px-2.5 py-1 text-xs text-ink-600">
             <span aria-hidden="true" className="size-1.5 rounded-full bg-emerald-500" />
             {t("footer.modelBadge")}
           </p>
         </div>
-        <p className="self-end text-xs text-ink-600 sm:text-right">{t("result.notScience")}</p>
+        <p className="self-end text-xs text-brand-700 dark:text-brand-300 sm:text-right">{t("result.notScience")}</p>
       </div>
       <div className="border-t border-brand-100">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-ink-600 sm:flex-row">

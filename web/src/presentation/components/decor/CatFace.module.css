@@ -214,10 +214,10 @@
   transform: rotate(12deg);
 }
 .whiskersRight .hair:nth-child(1) {
-  transform: rotate(12deg);
+  transform: rotate(-12deg);
 }
 .whiskersRight .hair:nth-child(3) {
-  transform: rotate(-12deg);
+  transform: rotate(12deg);
 }
 
 @keyframes catBlink {
