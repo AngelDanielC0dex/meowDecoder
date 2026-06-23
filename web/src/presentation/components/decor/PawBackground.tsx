@@ -5,10 +5,11 @@ import { Paw } from "./Paw";
 import styles from "./PawBackground.module.css";
 
 /**
- * A walking cat's paw-print trail, moving in a random heading.
- * Each walk is a sequence of 5 alternating L/R paw prints spaced along the
- * direction of travel. Staggered fade-in creates forward-motion illusion; the
- * whole trail fades out after ~6 s. Reduced-motion users see 2–3 static paws.
+ * A walking cat's paw-print trail moving FORWARD (toward the viewer).
+ * Each walk is a sequence of 5 alternating L/R paw prints spaced along a
+ * downward heading (45°–135° from horizontal) — never sideways or upward.
+ * Staggered fade-in creates the forward-stepping illusion; the whole trail
+ * fades out after ~6 s. Reduced-motion users see 3 static paws.
  *
  * Pure decoration — the layer is `aria-hidden` and `pointer-events:none`.
  */
@@ -57,7 +58,10 @@ interface Walk {
 
 function spawnWalk(): Walk {
   const id = `w${++nextId}`;
-  const heading = Math.random() * 360;
+  // Forward motion: the cat walks TOWARD the viewer, so the trail heads
+  // downward on screen. We constrain the heading to a downward cone
+  // (45°–135° from horizontal) — never pure sideways or upward.
+  const heading = 45 + Math.random() * 90;
   const rad = (heading * Math.PI) / 180;
   const dx = Math.cos(rad) * STEP_SPACING;
   const dy = Math.sin(rad) * STEP_SPACING;
@@ -68,7 +72,8 @@ function spawnWalk(): Walk {
   // Estimate trail extent to clamp.
   const trailExtent = (STEPS - 1) * STEP_SPACING;
   const startLeft = 4 + Math.random() * Math.max(8, 90 - trailExtent - 4);
-  const startTop = 6 + Math.random() * Math.max(8, 88 - trailExtent - 6);
+  // Forward walks start near the top so the trail has room to travel down.
+  const startTop = 4 + Math.random() * Math.max(8, 60 - trailExtent - 4);
 
   // Randomise which paw ("L" or "R") lands first.
   const firstIsLeft = Math.random() < 0.5;
@@ -103,9 +108,9 @@ const STATIC_PAWS: readonly {
   flipped: boolean;
   rotateDeg: number;
 }[] = [
-  { left: 14, top: 18, sizePx: 44, flipped: false, rotateDeg: -10 },
-  { left: 72, top: 60, sizePx: 38, flipped: true, rotateDeg: 15 },
-  { left: 84, top: 22, sizePx: 46, flipped: false, rotateDeg: 20 },
+  { left: 18, top: 14, sizePx: 44, flipped: false, rotateDeg: 90 },
+  { left: 68, top: 38, sizePx: 38, flipped: true, rotateDeg: 75 },
+  { left: 80, top: 72, sizePx: 46, flipped: false, rotateDeg: 105 },
 ];
 
 /* ────────── Component ────────── */

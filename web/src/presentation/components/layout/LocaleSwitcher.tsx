@@ -66,10 +66,10 @@ export function LocaleSwitcher() {
         <Image
           src="/gato-internacional.svg"
           alt=""
-          width={16}
-          height={16}
+          width={24}
+          height={24}
           unoptimized
-          className="size-4"
+          className="size-6"
           aria-hidden="true"
         />
         <span className="hidden sm:inline">{LABELS[locale] ?? locale}</span>

@@ -169,19 +169,21 @@
   border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
 }
 
-/* Whiskers: three fine hairs each side, fanning out from the muzzle. Colored
-   like the muzzle so they contrast the face in both themes. */
+/* Whiskers: three fine hairs each side, fanning out from the muzzle. The
+   container sits just past the muzzle edge so the hairs extend clearly
+   outward; the fan angle is wide enough to read as "outward", not "smile".
+   Colored like the muzzle so they contrast the face in both themes. */
 .whiskers {
   position: absolute;
-  top: 61%;
-  width: 24%;
-  height: 14%;
+  top: 60%;
+  width: 34%;
+  height: 22%;
 }
 .whiskersLeft {
-  right: 53%;
+  right: 56%;
 }
 .whiskersRight {
-  left: 53%;
+  left: 56%;
 }
 .hair {
   position: absolute;
@@ -191,13 +193,13 @@
   background: var(--cat-muzzle);
 }
 .hair:nth-child(1) {
-  top: 10%;
+  top: 8%;
 }
 .hair:nth-child(2) {
   top: 50%;
 }
 .hair:nth-child(3) {
-  top: 90%;
+  top: 92%;
 }
 .whiskersLeft .hair {
   right: 0;
@@ -208,16 +210,16 @@
   transform-origin: left center;
 }
 .whiskersLeft .hair:nth-child(1) {
-  transform: rotate(-12deg);
+  transform: rotate(-22deg);
 }
 .whiskersLeft .hair:nth-child(3) {
-  transform: rotate(12deg);
+  transform: rotate(22deg);
 }
 .whiskersRight .hair:nth-child(1) {
-  transform: rotate(-12deg);
+  transform: rotate(22deg);
 }
 .whiskersRight .hair:nth-child(3) {
-  transform: rotate(12deg);
+  transform: rotate(-22deg);
 }
 
 @keyframes catBlink {
