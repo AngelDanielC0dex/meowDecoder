@@ -1,10 +1,29 @@
+# Dependencies & build
 node_modules/
 .next/
 out/
+
+# Coverage & diagnostics
 coverage/
 *.tsbuildinfo
+
+# Next.js generated
 next-env.d.ts
+
+# Environment files (only .env.example is committed as a template)
 .env
 .env.local
-.env.production
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+
+# OS cruft
 .DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

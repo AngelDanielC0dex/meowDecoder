@@ -19,7 +19,7 @@
     "cats": "My cats",
     "cards": "Cards",
     "history": "History",
-    "medical": "Medical",
+    "medical": "Vaccination",
     "sounds": "Sounds",
     "primary": "Primary navigation",
     "openMenu": "Open menu",
@@ -154,6 +154,8 @@
     "microchip": "Microchip number",
     "microchipHint": "15 digits (ISO)",
     "microchipInvalid": "A microchip number has exactly 15 digits.",
+    "photo": "Photo",
+    "photoError": "We couldn't process that image. Try another one (JPG/PNG, max 10 MB).",
     "save": "Save",
     "cancel": "Cancel",
     "confirmDelete": "Delete this cat and its associated data?"
@@ -266,7 +268,7 @@
     "onnxEngine": "ONNX engine (in-browser model)"
   },
   "medical": {
-    "title": "Medical log",
+    "title": "Vaccination",
     "subtitle": "Track your cat's vaccinations by region. For registered users.",
     "assistantTitle": "AI assistant",
     "assistantSubtitle": "Ask the AI about your cat's health and vaccine card. Informational only, not a vet.",
@@ -287,7 +289,14 @@
     "markGiven": "Mark given",
     "dateLabel": "Date given for {vaccine}",
     "printCarnet": "Download / print card",
-    "exportJson": "Export (JSON)"
+    "exportJson": "Export (JSON)",
+    "tipsTitle": "Important care",
+    "tipsSubtitle": "Six things that can seriously harm a cat. When in doubt, call your vet.",
+    "removeDose": "Remove dose from {date}",
+    "deleteDoseTitle": "Delete dose",
+    "deleteDoseMessage": "Delete the dose recorded on {date}?",
+    "deleteDose": "Delete",
+    "cancel": "Cancel"
   },
   "premium": {
     "badge": "Premium",

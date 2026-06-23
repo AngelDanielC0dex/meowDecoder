@@ -19,7 +19,7 @@
     "cats": "Mis gatos",
     "cards": "Tarjetas",
     "history": "Historial",
-    "medical": "Médico",
+    "medical": "Vacunación",
     "sounds": "Sonidos",
     "primary": "Navegación principal",
     "openMenu": "Abrir menú",
@@ -154,6 +154,8 @@
     "microchip": "Número de microchip",
     "microchipHint": "15 dígitos (ISO)",
     "microchipInvalid": "Un número de microchip tiene exactamente 15 dígitos.",
+    "photo": "Foto",
+    "photoError": "No pudimos procesar esa imagen. Prueba con otra (JPG/PNG, máx 10 MB).",
     "save": "Guardar",
     "cancel": "Cancelar",
     "confirmDelete": "¿Eliminar este gato y sus datos asociados?"
@@ -266,7 +268,7 @@
     "onnxEngine": "Motor ONNX (modelo en el navegador)"
   },
   "medical": {
-    "title": "Historial médico",
+    "title": "Vacunación",
     "subtitle": "Controla las vacunas de tu gato según la región. Para usuarios registrados.",
     "assistantTitle": "Asistente IA",
     "assistantSubtitle": "Pregunta a la IA sobre la salud y el carnet de vacunas de tu gato. Solo informativo, no veterinario.",
@@ -287,7 +289,14 @@
     "markGiven": "Marcar puesta",
     "dateLabel": "Fecha de {vaccine}",
     "printCarnet": "Descargar / imprimir carnet",
-    "exportJson": "Exportar (JSON)"
+    "exportJson": "Exportar (JSON)",
+    "tipsTitle": "Cuidados importantes",
+    "tipsSubtitle": "Seis cosas que pueden dañar gravemente a un gato. Ante la duda, llama a tu veterinario.",
+    "removeDose": "Eliminar dosis del {date}",
+    "deleteDoseTitle": "Eliminar dosis",
+    "deleteDoseMessage": "¿Eliminar la dosis registrada el {date}?",
+    "deleteDose": "Eliminar",
+    "cancel": "Cancelar"
   },
   "premium": {
     "badge": "Premium",

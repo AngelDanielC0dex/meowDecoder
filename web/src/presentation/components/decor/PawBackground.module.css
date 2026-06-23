@@ -1,8 +1,13 @@
-/* Animated paw-print backdrop. A single fixed layer behind all content; paws
-   fade and gently scale in/out on staggered cycles so they "appear and
-   disappear" as ambient texture. Only opacity/transform animate (GPU-friendly,
-   no layout/paint thrash, no CLS). Tinted with --paw-color (set per theme in
-   globals.css). Fully decorative: the layer is aria-hidden + pointer-events:none. */
+/*
+ * Walking paw-print backdrop. A single fixed layer behind all content that
+ * simulates a cat walking across the screen — paw prints appear in sequential
+ * alternating L/R steps along a random heading, hold for a moment, then fade out
+ * before a new walk starts elsewhere. Only opacity/transform animate (GPU-only,
+ * no layout/paint thrash, no CLS).
+ *
+ * The component is aria-hidden + pointer-events:none; decorative only.
+ * Tinted via --paw-color (set per theme in globals.css).
+ */
 
 .layer {
   position: fixed;
@@ -13,39 +18,71 @@
   color: rgb(var(--paw-color));
 }
 
-.paw {
+.walk {
+  position: absolute;
+  inset: 0;
+}
+
+.step {
   position: absolute;
   opacity: 0;
-  transform: scale(0.85) rotate(var(--rot, 0deg));
-  animation-name: pawFade;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
+  transform-origin: center;
+  animation-name: stepAnim;
+  animation-fill-mode: both;
   will-change: opacity, transform;
 }
 
-.paw svg {
+.step svg {
   display: block;
   width: 100%;
   height: 100%;
 }
 
-@keyframes pawFade {
-  0%,
+@keyframes stepAnim {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) rotate(var(--rot, 0deg));
+    filter: blur(1px);
+  }
+  12% {
+    opacity: var(--peak, 0.14);
+    transform: scale(1) rotate(var(--rot, 0deg));
+    filter: blur(0);
+  }
+  55% {
+    opacity: var(--peak, 0.14);
+    transform: scale(1.02) rotate(var(--rot, 0deg));
+    filter: blur(0);
+  }
   100% {
     opacity: 0;
-    transform: scale(0.85) rotate(var(--rot, 0deg));
-  }
-  50% {
-    opacity: var(--peak, 0.1);
-    transform: scale(1) rotate(var(--rot, 0deg));
+    transform: scale(0.75) rotate(var(--rot, 0deg));
+    filter: blur(1px);
   }
 }
 
-/* Reduced motion: hold the paws faint and still — texture without movement. */
+/*
+ * Reduced motion: 2–3 static faint paws, no movement.
+ * The component skips JS animation and renders only the static set.
+ */
 @media (prefers-reduced-motion: reduce) {
-  .paw {
+  .step {
     animation: none;
-    opacity: calc(var(--peak, 0.1) * 0.8);
+    opacity: calc(var(--peak, 0.14) * 0.7);
     transform: scale(1) rotate(var(--rot, 0deg));
+    filter: none;
   }
+}
+
+.staticStep {
+  position: absolute;
+  opacity: calc(var(--peak, 0.14) * 0.7);
+  transform: scale(1) rotate(var(--rot, 0deg));
+  transform-origin: center;
+}
+
+.staticStep svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }

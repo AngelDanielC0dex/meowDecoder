@@ -13,8 +13,7 @@ import { CARD_WIDTH, CARD_HEIGHT, drawCatCard, type CardData } from "./card-rend
 import { ShareCard } from "./ShareCard";
 import type { CatId } from "@/domain/shared/ids";
 import type { AppLocale } from "@/i18n/routing";
-
-const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
+import { optimizeImage, IMAGE_PRESETS, ImageOptimizeError } from "@/infrastructure/media/optimize-image";
 
 /**
  * Presentation-card designer: pick a cat, add a photo, choose one of three
@@ -102,15 +101,20 @@ export function CardDesigner() {
 
   async function onPhoto(file: File | undefined) {
     if (!file || !catId) return;
-    if (file.size > MAX_PHOTO_BYTES) return;
-    await container.catPhotos.put(catId, file);
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      setPhoto(img);
-      URL.revokeObjectURL(url);
-    };
-    img.src = url;
+    try {
+      const blob = await optimizeImage(file, IMAGE_PRESETS.card);
+      await container.catPhotos.put(catId, blob);
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+      img.onload = () => {
+        setPhoto(img);
+        URL.revokeObjectURL(url);
+      };
+      img.src = url;
+    } catch (e) {
+      // Undecodable/oversized image → keep the previous photo silently.
+      if (!(e instanceof ImageOptimizeError)) throw e;
+    }
   }
 
   async function save() {

@@ -12,7 +12,8 @@
   --cat-size: 170px;
   /* Light theme defaults (a white cat hiding on the light surface). */
   --cat-face: #fff;
-  --cat-ear: #161616;
+  /* Ears are brand pink in BOTH themes (not theme-inverted like the face). */
+  --cat-ear: var(--color-brand-400);
   --cat-tuft: #fff;
   --cat-eyelid: #fff;
   --cat-muzzle: #161616;
@@ -29,7 +30,6 @@
 /* Dark theme: a black cat hiding on the dark surface (white outline parts). */
 :global(.dark) .cat {
   --cat-face: #161616;
-  --cat-ear: #fff;
   --cat-tuft: #161616;
   --cat-eyelid: #161616;
   --cat-muzzle: #fff;
@@ -167,6 +167,57 @@
   background: var(--cat-muzzle);
   transform: translateX(-50%);
   border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+}
+
+/* Whiskers: three fine hairs each side, fanning out from the muzzle. Colored
+   like the muzzle so they contrast the face in both themes. */
+.whiskers {
+  position: absolute;
+  top: 61%;
+  width: 24%;
+  height: 14%;
+}
+.whiskersLeft {
+  right: 53%;
+}
+.whiskersRight {
+  left: 53%;
+}
+.hair {
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  border-radius: 2px;
+  background: var(--cat-muzzle);
+}
+.hair:nth-child(1) {
+  top: 10%;
+}
+.hair:nth-child(2) {
+  top: 50%;
+}
+.hair:nth-child(3) {
+  top: 90%;
+}
+.whiskersLeft .hair {
+  right: 0;
+  transform-origin: right center;
+}
+.whiskersRight .hair {
+  left: 0;
+  transform-origin: left center;
+}
+.whiskersLeft .hair:nth-child(1) {
+  transform: rotate(-12deg);
+}
+.whiskersLeft .hair:nth-child(3) {
+  transform: rotate(12deg);
+}
+.whiskersRight .hair:nth-child(1) {
+  transform: rotate(12deg);
+}
+.whiskersRight .hair:nth-child(3) {
+  transform: rotate(-12deg);
 }
 
 @keyframes catBlink {

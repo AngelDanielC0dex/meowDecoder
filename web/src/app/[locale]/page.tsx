@@ -34,7 +34,7 @@ export async function generateMetadata({
  *  mobile without the URL-bar jump; `snap-start` opts the section into the gentle
  *  (proximity) snap declared on <html>; tall content (the sounds grid, FAQ) can
  *  still overflow naturally because it is a min-height, not a fixed height. */
-const SECTION = "flex min-h-[100svh] snap-start flex-col justify-center";
+const SECTION = "flex min-h-[calc(100svh_-_var(--header-h))] snap-start flex-col justify-center";
 
 /**
  * Landing page. Server-rendered, statically generated, ZERO client JS for the

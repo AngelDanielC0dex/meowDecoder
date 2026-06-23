@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { AppLocale } from "@/i18n/routing";
 import { buildPageMetadata } from "@/lib/seo";
 import { VaccineChecklist } from "@/presentation/components/medical/VaccineChecklist";
+import { CatCareTips } from "@/presentation/components/medical/CatCareTips";
 import { AssistantChat } from "@/presentation/components/assistant/AssistantChat";
 import { AdRailsLayout } from "@/presentation/components/ads/AdRailsLayout";
 import { isEnabled } from "@/server/flags";
@@ -38,6 +39,8 @@ export default async function MedicalPage({ params }: { params: Promise<{ locale
         <h1 className="mb-1 text-title font-bold">{t("title")}</h1>
         <p className="mb-6 text-ink-600">{t("subtitle")}</p>
         <VaccineChecklist />
+
+        <CatCareTips />
 
         {premiumEnabled && (
           <section aria-labelledby="medical-assistant" className="mt-12 border-t border-brand-100 pt-8">

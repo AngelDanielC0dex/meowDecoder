@@ -44,6 +44,9 @@
    read as a subtle texture, never as content. */
 :root {
   --paw-color: 168 156 172;
+  /* Sticky header height — sizes the full-height landing sections and the
+     scroll-snap padding so snapped sections sit flush under the navbar. */
+  --header-h: 4rem;
 }
 
 /* Dark theme: warm near-black surface, inverted ink scale, dark warm tints.
@@ -66,7 +69,7 @@
 html {
   scroll-behavior: smooth;
   /* Keeps #anchor jumps (and snapped sections) clear of the sticky header. */
-  scroll-padding-top: 4.5rem;
+  scroll-padding-top: var(--header-h);
 }
 
 /* Section scroll-snap is DESKTOP-ONLY: phones/tablets scroll normally (no snap,

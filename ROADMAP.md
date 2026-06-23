@@ -66,6 +66,18 @@
 - [x] **Anuncios responsive**: rail 160→300px (half-page) en 2xl, AdSlot fluido, leaderboard horizontal en móvil/tablet (`AdRailsLayout`).
 - [x] Item "login": confirmado que NO es bug — `AccountMenu` se oculta con `accounts.enabled=false`; aparece al activar cuentas. Footer `<nav>` redundante retirado.
 
+**Mejoras UX v3 (jun 2026) — verificado verde (typecheck/lint/test/build):**
+- [x] **Modal/ConfirmDialog** (`ui/Modal.tsx`, `ui/ConfirmDialog.tsx`): diálogos accesibles (portal, focus-trap, Escape, scroll-lock) que sustituyen `confirm()`/`alert()` nativos. Usado en borrar gato y borrar dosis de vacuna.
+- [x] **Optimización de imágenes** (`infrastructure/media/optimize-image.ts`): downscale+WebP en cliente vía `createImageBitmap`+canvas. Presets avatar (≤512px) y card (≤1080px). Límite entrada 10 MB.
+- [x] **Foto de gato (avatar)** (`cats/CatManager.tsx`): subida optimizada, avatar circular desde IndexedDB (`catPhotos`). Sustituye al emoji 🐈. Borrado de gato con ConfirmDialog.
+- [x] **"Vacunación"** (rename desde "Médico") + **6 avisos de cuidado felino** (`content/cat-care-tips.ts`, `CatCareTips.tsx`): chocolate, ibuprofeno, cebolla/ajo, lirios, leche, anticongelante. Rejilla de tarjetas con severidad danger/warn.
+- [x] **Historial de dosis** (`VaccineChecklist.tsx`): chips con todas las fechas por vacuna (no solo la última). Borrado de dosis con X al hover + ConfirmDialog.
+- [x] **Tarjetas rediseñadas** (`card-render.ts`): 3 estilos diferenciados — Minimal (claro, filete rosa), Sticker (fondo huellas, badges), Premium (oscuro, doble filete rosa/dorado, serif). `wrapText` respeta `\n` del textarea.
+- [x] **CatFace mejorado** (`decor/CatFace.{tsx,css}`): orejas rosas (`--color-brand-400`) en ambos temas + bigotes (3 líneas finas L/R ancladas al muzzle).
+- [x] **Landing sin hueco** (`globals.css` + `page.tsx`): `--header-h` + `scroll-padding-top` corrigen el snap de secciones 2/3.
+- [x] **SectionDots mejorado** (`SectionDots.tsx`): flechas ↑/↓ (y ←/→) navegan entre secciones con foco en el dot. Tooltip con nombre de sección al hover/focus.
+- [x] **PawBackground "caminar realista"** (`decor/PawBackground.tsx`): componente cliente que genera estelas de 5 huellas L/R alternas en dirección aleatoria, con ritmo de pasos y fade progresivo. Máx 2 paseos simultáneos. Reduced-motion: 3 huellas estáticas.
+
 ---
 
 ## ⏳ PENDIENTE (ordenado por fase y dependencia)
@@ -86,8 +98,8 @@
 - [ ] `NEXT_PUBLIC_ACCOUNTS_ENABLED=true` + probar flujo de login.
 
 ### FASE 2 — Sync, perfiles y Timeline
-- [ ] **Sync IndexedDB↔Postgres** (cats, sessions) para registrados (last-write-wins por entidad). API + autorización por dueño.
-- [ ] **Perfiles de gato**: foto (subida + compresión), raza, edad, **campo traits** (falta en el form), **nº microchip** (validación ISO 15 díg.) + **escáner QR** (BarcodeDetector/fallback JS; extrae chip/URL best-effort).
+- [x] **Sync IndexedDB↔Postgres** (cats, sessions) para registrados (last-write-wins por entidad). API + autorización por dueño.
+- [x] **Perfiles de gato**: foto (subida + compresión), raza, edad, **campo traits** (falta en el form), **nº microchip** (validación ISO 15 díg.) + **escáner QR** (BarcodeDetector/fallback JS; extrae chip/URL best-effort).
 - [ ] **Timeline** interactiva y responsiva: reproducir/descargar maullidos (**Opus**), **frase por estado en cada entrada** (persistir SEED int, no texto), **corrección desde el historial**.
 - [ ] Persistencia ligera: audio en Opus (mínimo tamaño) + seed de frase.
 
@@ -107,8 +119,10 @@
 - [x] Asistente maullido: el LLM explica el resultado de NUESTRO clasificador. (Meow-Omni-1 descartado.)
 - [ ] PENDIENTE activar: poner `OPENAI_API_KEY` y, con billing, premium real (`usePremium`) — hoy gate por usuario autenticado + upsell premium.
 
-### FASE 5 — Historial médico (premium)
-- [ ] **Checklist de vacunas** + **selector de región** (UE/país): catálogo con nivel `requerida_legal` (rabia y según país) vs `recomendada` (WSAVA core) vs `no-core`. Conteo/estado (al día / pendiente / falta requerida). ⚠️ Reglas por país verificadas con fuente fiable.
+### FASE 5 — Historial médico (registrado)
+- [x] **Checklist de vacunas** + **selector de región** (UE/país): catálogo con nivel `requerida_legal` (rabia y según país) vs `recomendada` (WSAVA core) vs `no-core`. Conteo/estado (al día / pendiente / falta requerida).
+- [x] **Historial de dosis** por vacuna: chips de fechas borrables, input de fecha para añadir refuerzos.
+- [x] **6 avisos de cuidado felino** (`CatCareTips`): chocolate, ibuprofeno/paracetamol, cebolla/ajo, lirios, leche, anticongelante. Rejilla danger/warn.
 - [ ] **Subida de informes/imágenes**: PDF/JPG/PNG/WebP, **límite 5MB/archivo**, **compresión de imagen en cliente**, caps por usuario (~30/gato o 100MB), bucket privado + signed URLs, cifrado + consentimiento, no entrenar.
 
 ### FASE 6 — Lanzamiento
