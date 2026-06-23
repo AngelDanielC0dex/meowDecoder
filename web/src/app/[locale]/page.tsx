@@ -127,7 +127,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </div>
             {accountsEnabled && (
               <div className="mt-4 max-w-md rounded-xl bg-brand-100/50 p-4 border border-brand-200 text-sm">
-                <p className="font-semibold text-brand-900 dark:text-brand-200">{t("accountCtaTitle")}</p>
+                <p className="font-semibold text-brand-700 dark:text-brand-300">{t("accountCtaTitle")}</p>
                 <p className="mt-1 text-ink-600">{t("accountCtaBody")}</p>
                 <NextLink
                   href="/auth/signin"

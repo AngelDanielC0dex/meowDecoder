@@ -59,9 +59,9 @@ interface Walk {
 function spawnWalk(): Walk {
   const id = `w${++nextId}`;
   // Forward motion: the cat walks TOWARD the viewer, so the trail heads
-  // downward on screen. We constrain the heading to a downward cone
-  // (45°–135° from horizontal) — never pure sideways or upward.
-  const heading = 45 + Math.random() * 90;
+  // straight down on screen. Narrow cone (70°–110° from horizontal) so the
+  // path is unambiguously downward — not sideways, not diagonal.
+  const heading = 70 + Math.random() * 40;
   const rad = (heading * Math.PI) / 180;
   const dx = Math.cos(rad) * STEP_SPACING;
   const dy = Math.sin(rad) * STEP_SPACING;

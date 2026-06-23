@@ -170,55 +170,52 @@
 }
 
 /* Whiskers: six fine lines, three per side, fanning OUTWARD from the muzzle.
-   Each whisker is positioned individually with an explicit angle so the fan
-   is unambiguous. The anchor (transform-origin) is the inner end (near the
-   muzzle); the outer end sweeps up/straight/down to create the fan. */
+   Anchored at the muzzle edges (45% / 55%) — not at the face center — so the
+   lines start at the convergence vertex and don't cross the nose. Placed
+   below the muzzle (70–78% top) to stay clear of the eyes. Short (20% width)
+   so the tips end well before the face edge. */
 .whisker {
   position: absolute;
   height: 2px;
-  width: 32%;
+  width: 20%;
   background: var(--cat-muzzle);
   border-radius: 2px;
-  transform-origin: right center;
 }
 
-/* Left side: anchor on the right (near muzzle), tip on the left.
-   Top whisker tilts up-left (-18°), middle stays horizontal, bottom tilts
-   down-left (+18°). */
+/* Left side: anchor at the LEFT edge of the muzzle (45%), tip on the left. */
 .whiskerLeft {
-  right: 50%;
+  right: 45%;
+  transform-origin: right center;
 }
 .whiskerLeft1 {
-  top: 60%;
-  transform: rotate(-18deg);
+  top: 70%;
+  transform: rotate(-15deg);
 }
 .whiskerLeft2 {
-  top: 64%;
+  top: 74%;
   transform: rotate(0deg);
 }
 .whiskerLeft3 {
-  top: 68%;
-  transform: rotate(18deg);
+  top: 78%;
+  transform: rotate(15deg);
 }
 
-/* Right side: anchor on the left (near muzzle), tip on the right.
-   Same angles as the left side — the rotation is applied from the inner
-   anchor, so the outer tip sweeps the same way. */
+/* Right side: anchor at the RIGHT edge of the muzzle (55%), tip on the right. */
 .whiskerRight {
-  left: 50%;
+  left: 55%;
   transform-origin: left center;
 }
 .whiskerRight1 {
-  top: 60%;
-  transform: rotate(18deg);
+  top: 70%;
+  transform: rotate(15deg);
 }
 .whiskerRight2 {
-  top: 64%;
+  top: 74%;
   transform: rotate(0deg);
 }
 .whiskerRight3 {
-  top: 68%;
-  transform: rotate(-18deg);
+  top: 78%;
+  transform: rotate(-15deg);
 }
 
 @keyframes catBlink {
