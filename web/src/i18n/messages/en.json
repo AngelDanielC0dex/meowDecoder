@@ -7,15 +7,38 @@
     "analyzeTitle": "Analyze your cat's sound — MeowDecoder",
     "analyzeDescription": "Record or upload audio and get a classification of your cat's vocalization with a confidence level."
   },
+  "footer": {
+    "modelBadge": "10-class YAMNet model running on-device",
+    "legal": "Legal",
+    "terms": "Terms & Conditions",
+    "privacy": "Privacy Policy"
+  },
   "nav": {
     "home": "Home",
     "analyze": "Analyze",
     "cats": "My cats",
+    "cards": "Cards",
     "history": "History",
+    "medical": "Medical",
     "sounds": "Sounds",
-    "skipToContent": "Skip to main content"
+    "primary": "Primary navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "skipToContent": "Skip to main content",
+    "language": "Language",
+    "changeLanguage": "Change language"
   },
   "home": {
+    "sections": {
+      "navLabel": "Sections",
+      "hero": "Start",
+      "how": "How it works",
+      "sounds": "Sounds",
+      "plans": "Plans",
+      "science": "Science",
+      "faq": "FAQ",
+      "cta": "Try it"
+    },
     "heroTitle": "Understand what your cat is trying to tell you",
     "heroSubtitle": "Record or upload a sound and get a clear acoustic analysis of its vocalization. No magic promises: an honest classification with its confidence level.",
     "ctaPrimary": "Analyze a sound",
@@ -36,7 +59,18 @@
     "testimonialsTitle": "What users say",
     "accountCtaTitle": "Create an account to save your cats' history",
     "accountCtaBody": "Sync your analyses across devices and keep each cat's corrections. Optional: the app works without an account.",
-    "accountCtaLink": "Create a free account"
+    "accountCtaLink": "Create a free account",
+    "tiersTitle": "Choose how to use MeowDecoder",
+    "tiersSubtitle": "Start analyzing instantly; create a free account to save and improve your cat's results.",
+    "tierAnonTitle": "No account",
+    "tierAnonF1": "Analyze meows instantly",
+    "tierAnonF2": "Results with their confidence level, no sign-up",
+    "tierFreeTitle": "Free account",
+    "tierFreeF1": "Saved meow history",
+    "tierFreeF2": "Corrections that improve your cat's predictions",
+    "tierFreeF3": "Medical log and vaccine card",
+    "tierFreeF4": "Downloadable, printable card",
+    "tiersCta": "Create a free account"
   },
   "analyze": {
     "title": "Analyze a sound",
@@ -48,12 +82,17 @@
     "cancel": "Cancel",
     "retry": "Retry",
     "recording": "Recording…",
-    "uploadHint": "Drag an audio file or select one (WAV, MP3, M4A).",
+    "uploadHint": "Drag an audio file or select one (WAV, MP3, M4A, OGG, FLAC, WebM).",
     "selectFile": "Select file",
+    "audioLimitsHint": "Max {seconds}s · up to {size} MB · WAV, MP3, M4A, OGG, FLAC, WebM. Avoid talking and background noise.",
+    "recordLimitsHint": "Up to {seconds}s. Record somewhere quiet — no talking or background noise.",
+    "recordingCountdown": "{seconds}s left",
     "analyzing": "Analyzing…",
     "selectCat": "Cat (optional)",
     "noCat": "Unassigned",
     "keepAudio": "Save the audio to my history",
+    "anonymousHint": "Analyze meows instantly. To save them to your history, correct them and keep a medical log,",
+    "anonymousHintCta": "create a free account",
     "stageDecoding": "Decoding audio",
     "stageResampling": "Preparing signal",
     "stageTrimming": "Normalizing",
@@ -61,6 +100,10 @@
     "stageExtracting": "Extracting features",
     "stageClassifying": "Classifying",
     "errorNoVocalization": "We couldn't detect a clear vocalization. Try a closer recording or less background noise.",
+    "errorTooLong": "Audio too long. Maximum {seconds} seconds.",
+    "errorTooShort": "Audio too short. Record at least half a second.",
+    "errorWrongFormat": "Unsupported or unreadable file. Use WAV, MP3, M4A, OGG, FLAC or WebM.",
+    "errorFileTooLarge": "File too large. Maximum {size} MB.",
     "errorMicDenied": "We don't have microphone permission. Enable it in your browser settings and retry.",
     "errorGeneric": "Something went wrong analyzing the audio. Please try again.",
     "permissionExplain": "We need microphone access only to record this sound. The audio is processed on your device."
@@ -74,6 +117,8 @@
     "certaintyMedium": "Medium certainty",
     "certaintyLow": "Low certainty",
     "ambiguousWarning": "The signal is ambiguous. Treat this as guidance, not a certainty.",
+    "unknownTitle": "We couldn't recognize the sound",
+    "unknownHint": "Make sure the recording captures only your cat — no talking, music or background noise — and try again with a closer, clearer sound.",
     "technicalDetails": "Technical details",
     "duration": "Duration",
     "pitch": "Pitch (f0)",
@@ -105,6 +150,10 @@
     "sexMale": "Male",
     "sexUnknown": "Unknown",
     "traits": "Traits",
+    "traitsHint": "e.g. talkative, shy (comma-separated)",
+    "microchip": "Microchip number",
+    "microchipHint": "15 digits (ISO)",
+    "microchipInvalid": "A microchip number has exactly 15 digits.",
     "save": "Save",
     "cancel": "Cancel",
     "confirmDelete": "Delete this cat and its associated data?"
@@ -115,27 +164,140 @@
     "filterByCat": "Filter by cat",
     "all": "All",
     "playAudio": "Play",
-    "deleteEntry": "Delete"
+    "download": "Download",
+    "correct": "Correct",
+    "deleteEntry": "Delete",
+    "assistantTitle": "AI assistant",
+    "assistantSubtitle": "Ask the AI about your cat's meow history."
   },
   "ads": {
     "sponsored": "Sponsored",
+    "advertisement": "Advertisement",
+    "placeholder": "Your ad here",
     "cta": "See more",
-    "meow": {
-      "title": "Feeders & dispensers",
-      "desc": "Make your cat's meal routines easier."
+    "wellbeing": {
+      "title": "Snacks, toys & comfort",
+      "desc": "Keep your happy cat entertained and relaxed."
     },
-    "purr": {
-      "title": "Beds & blankets",
-      "desc": "Cozy spots for their naps."
+    "alert": {
+      "title": "Vet care & pet insurance",
+      "desc": "Professional care when your cat needs it most."
     },
-    "trill": {
-      "title": "Interactive toys",
-      "desc": "Stimulation and play for active cats."
-    },
-    "unknown": {
-      "title": "Snacks & treats",
-      "desc": "Little treats for your cat."
+    "natural": {
+      "title": "Learn more about cat behavior",
+      "desc": "Understand your cat's natural instincts and needs."
     }
+  },
+  "cards": {
+    "title": "Presentation cards",
+    "subtitle": "Create and download a personalized card for your cat — photo, design, even their horoscope.",
+    "noCats": "Create a cat first in \"My cats\".",
+    "selectCat": "Cat",
+    "pickCat": "Choose a cat",
+    "photo": "Photo",
+    "birthDate": "Birth date",
+    "design": "Design",
+    "template_classic": "Classic",
+    "template_playful": "Playful",
+    "template_elegant": "Elegant",
+    "bio": "About your cat",
+    "bioPlaceholder": "Write something lovely about your cat…",
+    "showHoroscope": "Add their horoscope (from the birth date)",
+    "horoscopeNeedsDate": "Add the birth date to compute the sign.",
+    "save": "Save",
+    "saved": "Saved ✓",
+    "download": "Download card",
+    "ageYears": "{count, plural, one {# year} other {# years}}",
+    "bornOn": "Born on {date}",
+    "previewAlt": "Preview of {name}'s card",
+    "share": "Share",
+    "qr": "QR code",
+    "shareVia": "Share via",
+    "shareOn": "Share on {network}",
+    "shareText": "Check out {name}'s card 🐾",
+    "qrAlt": "QR code for {name}'s card",
+    "downloadQr": "Download QR",
+    "makeYours": "Make your own",
+    "invalidShareTitle": "Card not available",
+    "invalidShareBody": "This card link is invalid or has expired."
+  },
+  "zodiac": {
+    "aries": "Aries",
+    "aries_phrase": "Brave and playful — the first to explore every corner.",
+    "taurus": "Taurus",
+    "taurus_phrase": "Lover of comfort and long naps in the sun.",
+    "gemini": "Gemini",
+    "gemini_phrase": "Curious and chatty, always with something to meow about.",
+    "cancer": "Cancer",
+    "cancer_phrase": "Cuddly and homey — your lap is their favorite spot.",
+    "leo": "Leo",
+    "leo_phrase": "Proud and dramatic: born to rule the house.",
+    "virgo": "Virgo",
+    "virgo_phrase": "Tidy and observant — not a speck of dust escapes them.",
+    "libra": "Libra",
+    "libra_phrase": "Sociable and charming, seeking balance (and pets).",
+    "scorpio": "Scorpio",
+    "scorpio_phrase": "Intense and mysterious: purring now, who knows later.",
+    "sagittarius": "Sagittarius",
+    "sagittarius_phrase": "Adventurous and restless: the window is theirs to conquer.",
+    "capricorn": "Capricorn",
+    "capricorn_phrase": "Calm and steady, master of their routines.",
+    "aquarius": "Aquarius",
+    "aquarius_phrase": "Independent and original, playing by their own rules.",
+    "pisces": "Pisces",
+    "pisces_phrase": "Dreamy and sensitive, purring like no other."
+  },
+  "theme": {
+    "toggle": "Theme: {current}. Switch to {next}.",
+    "system": "system",
+    "light": "light",
+    "dark": "dark"
+  },
+  "admin": {
+    "title": "Admin panel",
+    "subtitle": "Turn product features on or off. Changes save instantly.",
+    "premiumEnabledLabel": "Premium accounts",
+    "premiumEnabledDesc": "Master switch for the premium system. Keep it off until Stripe is configured.",
+    "audioDonationLabel": "Audio donation",
+    "audioDonationDesc": "Let users donate anonymous audio to improve the model.",
+    "saveError": "Couldn't save the change. Please try again.",
+    "infraTitle": "Infrastructure (read-only)",
+    "accountsEnabled": "Accounts (Auth.js)",
+    "onnxEngine": "ONNX engine (in-browser model)"
+  },
+  "medical": {
+    "title": "Medical log",
+    "subtitle": "Track your cat's vaccinations by region. For registered users.",
+    "assistantTitle": "AI assistant",
+    "assistantSubtitle": "Ask the AI about your cat's health and vaccine card. Informational only, not a vet.",
+    "selectCat": "Cat",
+    "noCat": "Select a cat",
+    "pickCatHint": "Pick a cat to see and update its vaccination record.",
+    "region": "Regulation region",
+    "region_eu": "European Union",
+    "region_us": "United States",
+    "region_other": "Other",
+    "req_legal_required": "Legally required",
+    "req_recommended": "Recommended",
+    "req_optional": "Optional",
+    "level_core": "WSAVA core",
+    "level_non-core": "Non-core",
+    "lastGiven": "Last: {date}",
+    "notRecorded": "Not recorded",
+    "markGiven": "Mark given",
+    "dateLabel": "Date given for {vaccine}",
+    "printCarnet": "Download / print card",
+    "exportJson": "Export (JSON)"
+  },
+  "premium": {
+    "badge": "Premium",
+    "title": "Unlock the full power of MeowDecoder",
+    "subtitle": "Ad-free, with advanced features for you and your cat.",
+    "benefitAds": "No ads across the whole app",
+    "benefitAssistant": "AI assistant for your questions",
+    "benefitMedical": "Medical log & vaccination tracking",
+    "benefitTimeline": "Timeline with saved audio",
+    "cta": "Go Premium"
   },
   "common": {
     "loading": "Loading…",
@@ -145,5 +307,34 @@
     "errorTitle": "Something went wrong",
     "errorBody": "An unexpected error occurred. You can try again.",
     "errorRetry": "Try again"
+  },
+  "assistant": {
+    "title": "AI Assistant",
+    "subtitle": "Ask about your cat's record or its meow analyses. Informational only.",
+    "disclaimer": "This AI assistant is informational and is NOT a veterinarian. For health concerns, consult a licensed vet.",
+    "modeLabel": "Conversation topic",
+    "mode_meow": "Meows",
+    "mode_medical": "Health record",
+    "selectCat": "Cat",
+    "noCat": "No specific cat",
+    "placeholder": "Type your question…",
+    "send": "Send",
+    "thinking": "Thinking…",
+    "premiumTitle": "A Premium feature",
+    "premiumBody": "Upgrade to Premium to chat with the AI assistant about your cat.",
+    "errorRate": "You've reached the limit for now. Try again later.",
+    "errorGeneric": "Something went wrong. Please try again."
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "account": "Account",
+    "signInTitle": "Sign in to continue",
+    "signInCta": "Sign in",
+    "bodyHistory": "Create a free account to keep your analysis history across devices.",
+    "bodyCats": "Create a free account to save your cats and personalize results.",
+    "bodyCorrect": "Sign in to correct predictions and help improve the model for everyone.",
+    "bodyMedical": "Create a free account to keep your cat's medical log and vaccine card.",
+    "bodyAssistant": "Sign in to use the AI assistant with your cat's history."
   }
 }

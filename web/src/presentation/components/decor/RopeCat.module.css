@@ -1,0 +1,441 @@
+/* "Cat hanging from a ball of yarn", compiled from the source SCSS (this project
+   has no Sass): the swing/bob keyframes that Sass generated with @for loops over
+   the $swings list are expanded inline, the Sass lighten()/darken() colors are
+   pre-computed, and the demo's GLOBAL `*` reset is SCOPED to .allWrap so it can
+   never leak into the app. Retinted to the brand pink (yarn) with a soft
+   rose-grey cat. Decorative, pointer-events:none; lg+ only; hidden under
+   reduced motion (a frozen mid-swing pose would look broken). */
+
+/* ---- Scoped reset (was a global `*` rule in the demo) ---- */
+.allWrap *,
+.allWrap *::before,
+.allWrap *::after {
+  box-sizing: border-box;
+  position: relative;
+  animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
+  animation-fill-mode: both;
+}
+.allWrap *::before,
+.allWrap *::after {
+  content: "";
+  display: block;
+}
+
+/* ---- Layout / containment (our adaptation: fixed to the top-right) ---- */
+.allWrap {
+  display: none;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 15;
+  animation: rcBob 7s cubic-bezier(0.5, 0, 0.5, 1) infinite both;
+}
+@media (min-width: 1024px) {
+  .allWrap {
+    display: block;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .allWrap {
+    display: none !important;
+  }
+}
+
+.all {
+  top: 5.5rem;
+  right: clamp(1rem, 6vw, 5.5rem);
+  position: absolute;
+  width: 5rem;
+  height: 5rem;
+  transform-origin: center -20rem;
+  animation: rcSwing 7s cubic-bezier(0.5, 0, 0.5, 1) infinite both;
+}
+.all::before {
+  height: 20rem;
+  width: 2px;
+  background-color: #bf3568;
+  left: calc(50% - 1px);
+  bottom: 20rem;
+}
+
+.yarn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-image: radial-gradient(circle at top left, #dd8aa7, #bf3568 50%, #99294f);
+  z-index: 1;
+}
+.yarn::before,
+.yarn::after {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: white;
+  top: -1px;
+}
+.yarn::before {
+  left: calc(50% + 7px);
+  background-color: #d8bcc8;
+}
+.yarn::after {
+  right: calc(50% + 7px);
+  background-color: #f2e6ec;
+}
+
+.catWrap {
+  position: absolute;
+  top: 0;
+  left: calc(50% - 45px);
+  width: 90px;
+  height: 130px;
+  animation: rcReverseSwing 7s cubic-bezier(0.5, 0, 0.5, 1) infinite both;
+  transform-origin: top center;
+}
+
+.cat {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  animation: rcSwing 7s 0.2s cubic-bezier(0.5, 0, 0.5, 1) infinite both;
+  transform-origin: top center;
+}
+
+.catUpper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: top center;
+  z-index: 1;
+}
+.catUpper .catLeg {
+  position: absolute;
+  width: 20px;
+  height: 100%;
+  z-index: -1;
+  background-image: linear-gradient(to right, #f2e6ec, #f2e6ec 20%, #cda9b8);
+}
+.catUpper .catLeg:nth-child(1) {
+  border-top-left-radius: 100px;
+  left: 10px;
+}
+.catUpper .catLeg:nth-child(2) {
+  border-top-right-radius: 100px;
+  right: 10px;
+}
+
+.catLowerWrap {
+  height: 90%;
+  width: 75px;
+  position: absolute;
+  top: 100%;
+  left: calc(50% - 37.5px);
+  animation: rcReverseSwing 7s 0.2s cubic-bezier(0.5, 0, 0.5, 1) infinite both;
+  transform-origin: top center;
+}
+
+.catLower {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  animation: rcSwing 7s 0.5s cubic-bezier(0.5, 0, 0.5, 1) infinite both;
+  transform-origin: top center;
+}
+.catLower::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 100px;
+  background-image: radial-gradient(circle at 10px 50px, white, white 40%, #f2e6ec 65%, #cda9b8);
+  z-index: 1;
+}
+.catLower .catLeg,
+.catLower .catPaw {
+  z-index: 1;
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  animation: rcSwingLeg 7s 0.3s cubic-bezier(0.5, 0, 0.5, 1) infinite both;
+  transform-origin: top center;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  background-image: linear-gradient(to right, white, #f2e6ec, #cda9b8);
+}
+.catLower > .catLeg {
+  bottom: 20px;
+}
+.catLower > .catLeg .catLeg {
+  top: 25%;
+}
+.catLower > .catLeg + .catLeg {
+  right: 0;
+}
+.catLower .catPaw {
+  top: 50%;
+  border-radius: 50%;
+  background-color: #fff;
+}
+.catLower .catTail {
+  position: absolute;
+  height: 15px;
+  width: 10px;
+  animation: rcSwingTail 7s cubic-bezier(0.5, 0, 0.5, 1) infinite both;
+  transform-origin: top center;
+  z-index: 0;
+  background-image: linear-gradient(to right, white, #f2e6ec, #cda9b8);
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.catLower .catTail > .catTail {
+  top: 50%;
+}
+.catLower > .catTail {
+  left: calc(50% - 5px);
+  top: 95%;
+}
+
+.catHead {
+  width: 90px;
+  height: 90px;
+  background-image: radial-gradient(circle at 10px 10px, white, white 40%, #f2e6ec 65%, #cda9b8);
+  border-radius: 50%;
+  top: calc(100% - 45px);
+}
+
+.catFace {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  animation: rcFace 7s cubic-bezier(0.5, 0, 0.5, 1) infinite both;
+  transform-style: preserve-3d;
+  perspective: 100px;
+}
+
+.catEars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 50%;
+  width: 100%;
+  z-index: -1;
+}
+.catEar {
+  width: 20px;
+  height: 100%;
+  position: absolute;
+  border-radius: 5px;
+  top: -10px;
+}
+.catEar:first-child {
+  left: 0;
+  transform-origin: top left;
+  transform: skewY(40deg);
+  background-color: white;
+}
+.catEar:first-child::before {
+  left: 0;
+  border-top-right-radius: 50%;
+  border-bottom-right-radius: 50%;
+  background-color: #f7e9ef;
+}
+.catEar:last-child {
+  right: 0;
+  transform-origin: top right;
+  transform: skewY(-40deg);
+  background-color: #efe2e9;
+}
+.catEar:last-child::before {
+  right: 0;
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
+  background-color: #faecf1;
+}
+.catEar::before {
+  width: 60%;
+  height: 100%;
+  top: 10px;
+  position: absolute;
+  background-color: #fff;
+}
+
+.catEyes {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  height: 6px;
+  animation: rcBlink 7s step-end infinite both;
+}
+.catEyes::before,
+.catEyes::after {
+  position: absolute;
+  height: 6px;
+  width: 6px;
+  border-radius: 50%;
+  background-color: #6f4f5d;
+}
+.catEyes::before {
+  left: 20px;
+}
+.catEyes::after {
+  right: 20px;
+}
+
+.catMouth {
+  position: absolute;
+  width: 12px;
+  height: 8px;
+  background-color: #6f4f5d;
+  top: 60%;
+  left: calc(50% - 6px);
+  border-top-left-radius: 50% 30%;
+  border-top-right-radius: 50% 30%;
+  border-bottom-left-radius: 50% 70%;
+  border-bottom-right-radius: 50% 70%;
+  transform: translateZ(10px);
+}
+.catMouth::before,
+.catMouth::after {
+  position: absolute;
+  width: 90%;
+  height: 100%;
+  border: 2px solid #b79aa6;
+  top: 80%;
+  border-radius: 100px;
+  border-top-color: transparent;
+  z-index: -1;
+}
+.catMouth::before {
+  border-left-color: transparent;
+  right: calc(50% - 1px);
+  transform-origin: top right;
+  transform: rotate(10deg);
+}
+.catMouth::after {
+  border-right-color: transparent;
+  left: calc(50% - 1px);
+  transform-origin: top left;
+  transform: rotate(-10deg);
+}
+
+.catWhiskers {
+  width: 50%;
+  height: 8px;
+  position: absolute;
+  bottom: 25%;
+  left: 25%;
+  transform-style: preserve-3d;
+  perspective: 60px;
+}
+.catWhiskers::before,
+.catWhiskers::after {
+  position: absolute;
+  height: 100%;
+  width: 30%;
+  border: 2px solid #b79aa6;
+  border-left: none;
+  border-right: none;
+}
+.catWhiskers::before {
+  right: 100%;
+  transform-origin: right center;
+  transform: rotateY(70deg) rotateZ(-10deg);
+}
+.catWhiskers::after {
+  left: 100%;
+  transform-origin: left center;
+  transform: rotateY(-70deg) rotateZ(10deg);
+}
+
+/* ---- Keyframes (Sass @mixin swing expanded over $swings: 5 -10 10 -15 23 -23 15 -10 5) ---- */
+@keyframes rcSwing {
+  0% { transform: rotate(5deg); }
+  12.5% { transform: rotate(-10deg); }
+  25% { transform: rotate(10deg); }
+  37.5% { transform: rotate(-15deg); }
+  50% { transform: rotate(23deg); }
+  62.5% { transform: rotate(-23deg); }
+  75% { transform: rotate(15deg); }
+  87.5% { transform: rotate(-10deg); }
+  100% { transform: rotate(5deg); }
+}
+@keyframes rcReverseSwing {
+  0% { transform: rotate(-5deg); }
+  12.5% { transform: rotate(10deg); }
+  25% { transform: rotate(-10deg); }
+  37.5% { transform: rotate(15deg); }
+  50% { transform: rotate(-23deg); }
+  62.5% { transform: rotate(23deg); }
+  75% { transform: rotate(-15deg); }
+  87.5% { transform: rotate(10deg); }
+  100% { transform: rotate(-5deg); }
+}
+@keyframes rcSwingLeg {
+  0% { transform: rotate(0.5deg); }
+  12.5% { transform: rotate(-1deg); }
+  25% { transform: rotate(1deg); }
+  37.5% { transform: rotate(-1.5deg); }
+  50% { transform: rotate(2.3deg); }
+  62.5% { transform: rotate(-2.3deg); }
+  75% { transform: rotate(1.5deg); }
+  87.5% { transform: rotate(-1deg); }
+  100% { transform: rotate(0.5deg); }
+}
+@keyframes rcSwingTail {
+  0% { transform: rotate(-2deg); }
+  12.5% { transform: rotate(4deg); }
+  25% { transform: rotate(-4deg); }
+  37.5% { transform: rotate(6deg); }
+  50% { transform: rotate(-9.2deg); }
+  62.5% { transform: rotate(9.2deg); }
+  75% { transform: rotate(-6deg); }
+  87.5% { transform: rotate(4deg); }
+  100% { transform: rotate(-2deg); }
+}
+@keyframes rcFace {
+  0% { transform: translateX(-2.5px); }
+  12.5% { transform: translateX(5px); }
+  25% { transform: translateX(-5px); }
+  37.5% { transform: translateX(7.5px); }
+  50% { transform: translateX(-11.5px); }
+  62.5% { transform: translateX(11.5px); }
+  75% { transform: translateX(-7.5px); }
+  87.5% { transform: translateX(5px); }
+  100% { transform: translateX(-2.5px); }
+}
+@keyframes rcBob {
+  0% { transform: translateY(0.4rem); }
+  6.25% { transform: translateY(-0.4rem); }
+  12.5% { transform: translateY(0.4rem); }
+  18.75% { transform: translateY(-0.4rem); }
+  25% { transform: translateY(0.4rem); }
+  31.25% { transform: translateY(-0.4rem); }
+  37.5% { transform: translateY(0.4rem); }
+  43.75% { transform: translateY(-0.4rem); }
+  50% { transform: translateY(0.4rem); }
+  56.25% { transform: translateY(-0.4rem); }
+  62.5% { transform: translateY(0.4rem); }
+  68.75% { transform: translateY(-0.4rem); }
+  75% { transform: translateY(0.4rem); }
+  81.25% { transform: translateY(-0.4rem); }
+  87.5% { transform: translateY(0.4rem); }
+  93.75% { transform: translateY(-0.4rem); }
+  100% { transform: translateY(0.4rem); }
+}
+@keyframes rcBlink {
+  0%, 100%, 10%, 25%, 80% { transform: scaleY(1); }
+  8%, 23%, 78% { transform: scaleY(0.1); }
+}

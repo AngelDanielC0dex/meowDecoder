@@ -21,13 +21,38 @@ un sistema de corrección que mejora el producto con el uso.
 salvo que lo dones explícitamente para mejorar el modelo. Funciona offline,
 sin cuenta, en móvil y escritorio, en español e inglés.
 
+## Funcionalidades
+
+**Niveles de acceso** (fuente única `useAccess`; el sistema de cuentas se activa con
+`NEXT_PUBLIC_ACCOUNTS_ENABLED`):
+
+| | Anónimo | Registrado | Premium |
+|---|:--:|:--:|:--:|
+| Analizar maullidos | ✅ (puntual, sin guardar) | ✅ | ✅ |
+| Historial + correcciones (mejoran las predicciones de **ese** gato) | ❌ | ✅ | ✅ |
+| Historial médico + carnet de vacunas (descargable/imprimible) | ❌ | ✅ | ✅ |
+| Asistente de IA (informativo, **no veterinario**) | ❌ | ❌ | ✅ |
+
+- **Perfiles de gato** con microchip (ISO 11784/11785) y **tarjetas de presentación**
+  descargables (3 diseños, foto, bio, **horóscopo** opcional) que se pueden **compartir**
+  (Web Share + redes) y convertir en **código QR**.
+- **Tema claro/oscuro** (sigue al sistema + interruptor, persistido, sin parpadeo).
+- **Panel de administración** (`/admin`, allowlist `ADMIN_EMAILS`) para activar/desactivar
+  funciones mediante *feature flags* sin redeploy — p. ej. el sistema premium.
+- **SEO** (JSON-LD, canonical+hreflang, sitemap/robots, OG generadas) y **accesibilidad**
+  (roles ARIA, foco visible, `prefers-reduced-motion`, suite **axe-core** en CI).
+
+> Monetización: anuncios honestos (categorías, nunca por estado emocional individual) para
+> usuarios free; Premium sin anuncios. El billing (Stripe) se conecta en su fase; hasta
+> entonces el interruptor `premium.enabled` queda **desactivado**.
+
 ## Cómo funciona
 
 ```
 micrófono / archivo (WAV·MP3·M4A)
    → decodificación y resampleo nativos (16 kHz mono)
    → Web Worker: normalización · VAD adaptativo · segmentación · features
-   → inferencia: ONNX (CNN/MLP, WASM/WebGPU) con fallback heurístico DSP
+   → inferencia: ONNX (YAMNet + cabeza densa, WASM) con fallback heurístico DSP
    → resultado: clase + confianza + alternativas + interpretación + feedback
 ```
 
@@ -88,10 +113,8 @@ cd training
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 
-# Modelo de integración sintético (reproduce el artefacto publicado):
-PYTHONPATH=src python scripts/train_synthetic_model.py all
-
-# Modelo real con CatMeows (Zenodo 4008297): ver training/README.md
+# Modelo real (YAMNet transfer learning) con CatMeows/NAYA: ver training/README.md
+# Flujo: extract → train → evaluate (+ sweep de hiperparámetros opcional).
 ```
 
 ## El contrato del modelo (resumen)
@@ -99,16 +122,16 @@ PYTHONPATH=src python scripts/train_synthetic_model.py all
 Fijado en [`docs/model-contract.md`](./docs/model-contract.md) y en
 `web/src/domain/analysis/contract.ts`; verificado por tests:
 
-- **Entrada:** log-mel 64×96 estandarizado por ejemplo, de PCM mono 16 kHz; tensor `float32 [b,1,64,96]` llamado `input`.
-- **Salida:** softmax `[b,6]` llamado `probs` sobre `meow, purr, trill, hiss, growl, yowl` (en ese orden).
+- **Entrada:** PCM mono 16 kHz (forma de onda). YAMNet (congelado) extrae embeddings de 1024 dim; frames de 0.96 s con salto de 0.48 s.
+- **Salida:** softmax sobre **10 clases** (`feliz_contento, trinos, enfadado, pelea, llamada_madre, llamada_apareamiento, dolor, descansando, advertencia, atencion`, en ese orden).
 - **Umbrales:** alta ≥ 0.70 con margen ≥ 0.15 · media ≥ 0.45 · baja < 0.45.
 - **`unknown`:** decisión de producto, no clase del modelo — con certeza baja, el resultado primario es `desconocido` y la mejor clase se degrada a alternativa.
 
-> ⚠️ El modelo publicado (`mlp-synthetic-2026.06.0`, 35 KB) está entrenado con
-> **señales sintéticas paramétricas** que imitan las firmas acústicas de cada
-> clase. Valida la cadena completa (entrenamiento → export → navegador → paridad
-> → regresión) y fija el contrato, pero no sustituye al entrenamiento con datos
-> reales. Detalles y plan en `docs/model-contract.md` §7.
+> ⚠️ Arquitectura: **YAMNet congelado → embeddings (+ features prosódicas) →
+> cabeza densa → ONNX**. El motor por defecto en el navegador es el **heurístico
+> DSP** (sin descarga); el motor ONNX se activa con `NEXT_PUBLIC_MODEL_BASE_URL`
+> una vez el modelo entrenado supera el gate de regresión contra la baseline.
+> Detalles en `docs/model-contract.md`.
 
 ## Verificación
 

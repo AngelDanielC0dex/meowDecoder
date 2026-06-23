@@ -23,6 +23,12 @@ import {
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   email: text("email").notNull().unique(),
+  // `name`, `image` and `emailVerified` are the columns the Auth.js
+  // DrizzleAdapter reads/writes (the adapter contract). `emailVerifiedAt` is
+  // kept for the app's own bookkeeping; Auth.js uses `emailVerified`.
+  name: text("name"),
+  image: text("image"),
+  emailVerified: timestamp("email_verified", { withTimezone: true }),
   emailVerifiedAt: timestamp("email_verified_at", { withTimezone: true }),
   // Monetization: null = free tier. Resolved against subscriptions for entitlements.
   plan: text("plan", { enum: ["free", "premium"] })
@@ -30,6 +36,51 @@ export const users = pgTable("users", {
     .default("free"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+/**
+ * ── Auth.js (NextAuth v5) adapter tables ───────────────────────────────────
+ * Shapes required by `@auth/drizzle-adapter`. The auth-session table is named
+ * `auth_sessions` so it never collides with the app's `sessions` table above,
+ * which stores ANALYSIS sessions (a completely different concept). Wired in
+ * src/server/auth/config.ts via explicit table references.
+ */
+export const accounts = pgTable(
+  "accounts",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: text("type").notNull(),
+    provider: text("provider").notNull(),
+    providerAccountId: text("provider_account_id").notNull(),
+    refresh_token: text("refresh_token"),
+    access_token: text("access_token"),
+    expires_at: integer("expires_at"),
+    token_type: text("token_type"),
+    scope: text("scope"),
+    id_token: text("id_token"),
+    session_state: text("session_state"),
+  },
+  (t) => [primaryKey({ columns: [t.provider, t.providerAccountId] })],
+);
+
+export const authSessions = pgTable("auth_sessions", {
+  sessionToken: text("session_token").primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  expires: timestamp("expires", { withTimezone: true }).notNull(),
+});
+
+export const verificationTokens = pgTable(
+  "verification_tokens",
+  {
+    identifier: text("identifier").notNull(),
+    token: text("token").notNull(),
+    expires: timestamp("expires", { withTimezone: true }).notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.identifier, t.token] })],
+);
 
 export const cats = pgTable(
   "cats",
@@ -45,6 +96,19 @@ export const cats = pgTable(
       .notNull()
       .default("unknown"),
     traits: jsonb("traits").$type<string[]>().notNull().default([]),
+    /** ISO 11784/11785 microchip (15 digits). Nullable; entered by the user. */
+    microchip: text("microchip"),
+    /** Object-storage key for the cat's photo (set on upload). */
+    photoObjectKey: text("photo_object_key"),
+    /** Exact birth date (ISO yyyy-mm-dd); enables precise age + the card horoscope. */
+    birthDate: text("birth_date"),
+    /** Free-form blurb shown on the presentation card. */
+    bio: text("bio"),
+    /** Chosen presentation-card design + horoscope toggle (mirror of local prefs). */
+    cardTemplate: text("card_template", { enum: ["classic", "playful", "elegant"] })
+      .notNull()
+      .default("classic"),
+    showHoroscope: boolean("show_horoscope").notNull().default(false),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
@@ -163,4 +227,43 @@ export const catPriors = pgTable(
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [primaryKey({ columns: [t.catId, t.cls] })],
+);
+
+/**
+ * ── Medical log (Premium) ──────────────────────────────────────────────────
+ * SENSITIVE health data. Treated with explicit consent, never used for model
+ * training, and deleted with the cat/account (cascade). The Vet-AI RAG flow
+ * reads ONLY the snippets needed to answer a query (see Privacy Policy).
+ */
+export const vaccinations = pgTable(
+  "vaccinations",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    catId: uuid("cat_id")
+      .notNull()
+      .references(() => cats.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    administeredOn: timestamp("administered_on", { withTimezone: true }).notNull(),
+    nextDueOn: timestamp("next_due_on", { withTimezone: true }),
+    vet: text("vet"),
+    notes: text("notes"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("vaccinations_cat_idx").on(t.catId)],
+);
+
+export const medicalRecords = pgTable(
+  "medical_records",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    catId: uuid("cat_id")
+      .notNull()
+      .references(() => cats.id, { onDelete: "cascade" }),
+    kind: text("kind", { enum: ["visit", "medication", "condition", "note"] }).notNull(),
+    title: text("title").notNull(),
+    description: text("description"),
+    occurredOn: timestamp("occurred_on", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("medical_records_cat_idx").on(t.catId)],
 );

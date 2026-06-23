@@ -9,14 +9,25 @@ import { SITE_URL } from "@/lib/seo";
  * app surfaces (analyze/cats/history) are intentionally excluded.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const publicPaths = ["", ...VOCALIZATIONS.map((v) => `/sounds/${v.slug}`)];
+  const publicPaths = [
+    "",
+    ...VOCALIZATIONS.map((v) => `/sounds/${v.slug}`),
+    "/legal/terms",
+    "/legal/privacy",
+  ];
+
+  const priorityFor = (path: string): number => {
+    if (path === "") return 1;
+    if (path.startsWith("/legal/")) return 0.3;
+    return 0.7;
+  };
 
   return publicPaths.flatMap((path) =>
     routing.locales.map((locale) => ({
       url: `${SITE_URL}/${locale}${path}`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
-      priority: path === "" ? 1 : 0.7,
+      priority: priorityFor(path),
       alternates: {
         languages: {
           ...Object.fromEntries(

@@ -7,15 +7,38 @@
     "analyzeTitle": "Analizar el sonido de tu gato — MeowDecoder",
     "analyzeDescription": "Graba o sube un audio y obtén una clasificación de la vocalización de tu gato con su nivel de confianza."
   },
+  "footer": {
+    "modelBadge": "Modelo 10 clases (YAMNet) activo en el dispositivo",
+    "legal": "Legal",
+    "terms": "Términos y Condiciones",
+    "privacy": "Política de Privacidad"
+  },
   "nav": {
     "home": "Inicio",
     "analyze": "Analizar",
     "cats": "Mis gatos",
+    "cards": "Tarjetas",
     "history": "Historial",
+    "medical": "Médico",
     "sounds": "Sonidos",
-    "skipToContent": "Saltar al contenido principal"
+    "primary": "Navegación principal",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "skipToContent": "Saltar al contenido principal",
+    "language": "Idioma",
+    "changeLanguage": "Cambiar idioma"
   },
   "home": {
+    "sections": {
+      "navLabel": "Secciones",
+      "hero": "Inicio",
+      "how": "Cómo funciona",
+      "sounds": "Sonidos",
+      "plans": "Planes",
+      "science": "Ciencia",
+      "faq": "FAQ",
+      "cta": "Pruébalo"
+    },
     "heroTitle": "Entiende lo que tu gato intenta decirte",
     "heroSubtitle": "Graba o sube un sonido y obtén un análisis acústico claro de su vocalización. Sin promesas mágicas: clasificación honesta con su nivel de confianza.",
     "ctaPrimary": "Analizar un sonido",
@@ -36,7 +59,18 @@
     "testimonialsTitle": "Lo que dicen quienes lo usan",
     "accountCtaTitle": "Crea una cuenta para guardar el historial de tus gatos",
     "accountCtaBody": "Sincroniza tus análisis entre dispositivos y conserva las correcciones de cada gato. Opcional: la app funciona sin cuenta.",
-    "accountCtaLink": "Crear cuenta gratis"
+    "accountCtaLink": "Crear cuenta gratis",
+    "tiersTitle": "Elige cómo usar MeowDecoder",
+    "tiersSubtitle": "Empieza a analizar al instante; crea una cuenta gratis para guardar y mejorar los resultados de tu gato.",
+    "tierAnonTitle": "Sin cuenta",
+    "tierAnonF1": "Analiza maullidos al instante",
+    "tierAnonF2": "Resultados con su nivel de confianza, sin registro",
+    "tierFreeTitle": "Con cuenta gratis",
+    "tierFreeF1": "Historial de maullidos guardado",
+    "tierFreeF2": "Correcciones que mejoran las predicciones de tu gato",
+    "tierFreeF3": "Historial médico y carnet de vacunas",
+    "tierFreeF4": "Carnet descargable e imprimible",
+    "tiersCta": "Crear cuenta gratis"
   },
   "analyze": {
     "title": "Analizar un sonido",
@@ -48,12 +82,17 @@
     "cancel": "Cancelar",
     "retry": "Reintentar",
     "recording": "Grabando…",
-    "uploadHint": "Arrastra un archivo de audio o selecciónalo (WAV, MP3, M4A).",
+    "uploadHint": "Arrastra un archivo de audio o selecciónalo (WAV, MP3, M4A, OGG, FLAC, WebM).",
     "selectFile": "Seleccionar archivo",
+    "audioLimitsHint": "Máx {seconds}s · hasta {size} MB · WAV, MP3, M4A, OGG, FLAC, WebM. Evita hablar y el ruido de fondo.",
+    "recordLimitsHint": "Hasta {seconds}s. Graba en un sitio tranquilo, sin voces ni ruido de fondo.",
+    "recordingCountdown": "quedan {seconds}s",
     "analyzing": "Analizando…",
     "selectCat": "Gato (opcional)",
     "noCat": "Sin asignar",
     "keepAudio": "Guardar el audio en mi historial",
+    "anonymousHint": "Analiza maullidos al instante. Para guardarlos en tu historial, corregirlos y llevar el historial médico,",
+    "anonymousHintCta": "crea una cuenta gratis",
     "stageDecoding": "Decodificando audio",
     "stageResampling": "Preparando señal",
     "stageTrimming": "Normalizando",
@@ -61,6 +100,10 @@
     "stageExtracting": "Extrayendo características",
     "stageClassifying": "Clasificando",
     "errorNoVocalization": "No detectamos ninguna vocalización clara. Prueba con una grabación más cercana o con menos ruido de fondo.",
+    "errorTooLong": "Audio demasiado largo. Máximo {seconds} segundos.",
+    "errorTooShort": "Audio demasiado corto. Graba al menos medio segundo.",
+    "errorWrongFormat": "Archivo no compatible o ilegible. Usa WAV, MP3, M4A, OGG, FLAC o WebM.",
+    "errorFileTooLarge": "Archivo demasiado grande. Máximo {size} MB.",
     "errorMicDenied": "No tenemos permiso para el micrófono. Actívalo en los ajustes del navegador y reintenta.",
     "errorGeneric": "Algo salió mal al analizar el audio. Inténtalo de nuevo.",
     "permissionExplain": "Necesitamos acceso al micrófono solo para grabar este sonido. El audio se procesa en tu dispositivo."
@@ -74,6 +117,8 @@
     "certaintyMedium": "Certeza media",
     "certaintyLow": "Baja certeza",
     "ambiguousWarning": "La señal es ambigua. Tómalo como una orientación, no como una certeza.",
+    "unknownTitle": "No pudimos reconocer el sonido",
+    "unknownHint": "Asegúrate de que la grabación capte solo a tu gato —sin voces, música ni ruido de fondo— y prueba de nuevo con un sonido más cercano y claro.",
     "technicalDetails": "Detalles técnicos",
     "duration": "Duración",
     "pitch": "Tono (f0)",
@@ -105,6 +150,10 @@
     "sexMale": "Macho",
     "sexUnknown": "No lo sé",
     "traits": "Rasgos",
+    "traitsHint": "p. ej. hablador, tímido (separados por comas)",
+    "microchip": "Número de microchip",
+    "microchipHint": "15 dígitos (ISO)",
+    "microchipInvalid": "Un número de microchip tiene exactamente 15 dígitos.",
     "save": "Guardar",
     "cancel": "Cancelar",
     "confirmDelete": "¿Eliminar este gato y sus datos asociados?"
@@ -115,27 +164,140 @@
     "filterByCat": "Filtrar por gato",
     "all": "Todos",
     "playAudio": "Reproducir",
-    "deleteEntry": "Eliminar"
+    "download": "Descargar",
+    "correct": "Corregir",
+    "deleteEntry": "Eliminar",
+    "assistantTitle": "Asistente IA",
+    "assistantSubtitle": "Pregunta a la IA sobre el historial de maullidos de tu gato."
   },
   "ads": {
     "sponsored": "Patrocinado",
+    "advertisement": "Publicidad",
+    "placeholder": "Tu anuncio aquí",
     "cta": "Ver más",
-    "meow": {
-      "title": "Comederos y dispensadores",
-      "desc": "Facilita las rutinas de comida de tu gato."
+    "wellbeing": {
+      "title": "Snacks, juguetes y confort",
+      "desc": "Mantén a tu gato feliz y relajado."
     },
-    "purr": {
-      "title": "Camas y mantas",
-      "desc": "Rincones cómodos para sus siestas."
+    "alert": {
+      "title": "Veterinaria y seguros de mascota",
+      "desc": "Atención profesional cuando tu gato más lo necesita."
     },
-    "trill": {
-      "title": "Juguetes interactivos",
-      "desc": "Estimulación y juego para gatos activos."
-    },
-    "unknown": {
-      "title": "Snacks y premios",
-      "desc": "Pequeños caprichos para tu gato."
+    "natural": {
+      "title": "Conoce más sobre el comportamiento felino",
+      "desc": "Entiende los instintos y necesidades de tu gato."
     }
+  },
+  "cards": {
+    "title": "Tarjetas de presentación",
+    "subtitle": "Crea y descarga una tarjeta personalizada de tu gato, con foto, diseño y hasta su horóscopo.",
+    "noCats": "Primero crea un gato en \"Mis gatos\".",
+    "selectCat": "Gato",
+    "pickCat": "Elige un gato",
+    "photo": "Foto",
+    "birthDate": "Fecha de nacimiento",
+    "design": "Diseño",
+    "template_classic": "Clásico",
+    "template_playful": "Divertido",
+    "template_elegant": "Elegante",
+    "bio": "Sobre tu gato",
+    "bioPlaceholder": "Escribe algo bonito sobre tu gato…",
+    "showHoroscope": "Añadir su horóscopo (según la fecha de nacimiento)",
+    "horoscopeNeedsDate": "Añade la fecha de nacimiento para calcular el signo.",
+    "save": "Guardar",
+    "saved": "Guardado ✓",
+    "download": "Descargar tarjeta",
+    "ageYears": "{count, plural, one {# año} other {# años}}",
+    "bornOn": "Nació el {date}",
+    "previewAlt": "Vista previa de la tarjeta de {name}",
+    "share": "Compartir",
+    "qr": "Código QR",
+    "shareVia": "Compartir mediante",
+    "shareOn": "Compartir en {network}",
+    "shareText": "Mira la tarjeta de {name} 🐾",
+    "qrAlt": "Código QR de la tarjeta de {name}",
+    "downloadQr": "Descargar QR",
+    "makeYours": "Crea la tuya",
+    "invalidShareTitle": "Tarjeta no disponible",
+    "invalidShareBody": "Este enlace de tarjeta no es válido o ha caducado."
+  },
+  "zodiac": {
+    "aries": "Aries",
+    "aries_phrase": "Valiente y juguetón: el primero en explorar cada rincón.",
+    "taurus": "Tauro",
+    "taurus_phrase": "Amante de la comodidad y las siestas largas al sol.",
+    "gemini": "Géminis",
+    "gemini_phrase": "Curioso y parlanchín, siempre tiene algo que maullar.",
+    "cancer": "Cáncer",
+    "cancer_phrase": "Mimoso y hogareño: tu regazo es su lugar favorito.",
+    "leo": "Leo",
+    "leo_phrase": "Orgulloso y dramático: nació para reinar en casa.",
+    "virgo": "Virgo",
+    "virgo_phrase": "Pulcro y observador, no se le escapa ni una mota de polvo.",
+    "libra": "Libra",
+    "libra_phrase": "Sociable y encantador, busca el equilibrio (y las caricias).",
+    "scorpio": "Escorpio",
+    "scorpio_phrase": "Intenso y misterioso: hoy ronronea, mañana quién sabe.",
+    "sagittarius": "Sagitario",
+    "sagittarius_phrase": "Aventurero e inquieto: la ventana es su mundo por conquistar.",
+    "capricorn": "Capricornio",
+    "capricorn_phrase": "Tranquilo y constante, dueño de sus rutinas.",
+    "aquarius": "Acuario",
+    "aquarius_phrase": "Independiente y original, juega con sus propias reglas.",
+    "pisces": "Piscis",
+    "pisces_phrase": "Soñador y sensible, ronronea como nadie."
+  },
+  "theme": {
+    "toggle": "Tema: {current}. Cambiar a {next}.",
+    "system": "sistema",
+    "light": "claro",
+    "dark": "oscuro"
+  },
+  "admin": {
+    "title": "Panel de administración",
+    "subtitle": "Activa o desactiva funciones del producto. Los cambios se guardan al instante.",
+    "premiumEnabledLabel": "Cuentas premium",
+    "premiumEnabledDesc": "Interruptor maestro del sistema premium. Mantenlo desactivado hasta configurar Stripe.",
+    "audioDonationLabel": "Donación de audio",
+    "audioDonationDesc": "Permite a los usuarios donar audios anónimos para mejorar el modelo.",
+    "saveError": "No se pudo guardar el cambio. Inténtalo de nuevo.",
+    "infraTitle": "Infraestructura (solo lectura)",
+    "accountsEnabled": "Cuentas (Auth.js)",
+    "onnxEngine": "Motor ONNX (modelo en el navegador)"
+  },
+  "medical": {
+    "title": "Historial médico",
+    "subtitle": "Controla las vacunas de tu gato según la región. Para usuarios registrados.",
+    "assistantTitle": "Asistente IA",
+    "assistantSubtitle": "Pregunta a la IA sobre la salud y el carnet de vacunas de tu gato. Solo informativo, no veterinario.",
+    "selectCat": "Gato",
+    "noCat": "Selecciona un gato",
+    "pickCatHint": "Elige un gato para ver y actualizar su registro de vacunas.",
+    "region": "Región de regulación",
+    "region_eu": "Unión Europea",
+    "region_us": "Estados Unidos",
+    "region_other": "Otra",
+    "req_legal_required": "Obligatoria por ley",
+    "req_recommended": "Recomendada",
+    "req_optional": "Opcional",
+    "level_core": "Esencial (WSAVA)",
+    "level_non-core": "No esencial",
+    "lastGiven": "Última: {date}",
+    "notRecorded": "Sin registrar",
+    "markGiven": "Marcar puesta",
+    "dateLabel": "Fecha de {vaccine}",
+    "printCarnet": "Descargar / imprimir carnet",
+    "exportJson": "Exportar (JSON)"
+  },
+  "premium": {
+    "badge": "Premium",
+    "title": "Desbloquea todo el potencial de MeowDecoder",
+    "subtitle": "Sin anuncios y con funciones avanzadas para ti y tu gato.",
+    "benefitAds": "Sin anuncios en toda la app",
+    "benefitAssistant": "Asistente de IA para tus dudas",
+    "benefitMedical": "Historial médico y control de vacunas",
+    "benefitTimeline": "Línea de tiempo con tus audios",
+    "cta": "Hazte Premium"
   },
   "common": {
     "loading": "Cargando…",
@@ -145,5 +307,34 @@
     "errorTitle": "Algo salió mal",
     "errorBody": "Ha ocurrido un error inesperado. Puedes reintentar.",
     "errorRetry": "Reintentar"
+  },
+  "assistant": {
+    "title": "Asistente IA",
+    "subtitle": "Pregunta sobre el historial de tu gato o sus análisis de maullidos. Solo informativo.",
+    "disclaimer": "Este asistente de IA es informativo y NO es un veterinario. Ante problemas de salud, consulta a un veterinario colegiado.",
+    "modeLabel": "Tema de la conversación",
+    "mode_meow": "Maullidos",
+    "mode_medical": "Historial médico",
+    "selectCat": "Gato",
+    "noCat": "Ningún gato concreto",
+    "placeholder": "Escribe tu pregunta…",
+    "send": "Enviar",
+    "thinking": "Pensando…",
+    "premiumTitle": "Función Premium",
+    "premiumBody": "Hazte Premium para chatear con el asistente de IA sobre tu gato.",
+    "errorRate": "Has alcanzado el límite por ahora. Inténtalo más tarde.",
+    "errorGeneric": "Algo salió mal. Inténtalo de nuevo."
+  },
+  "auth": {
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión",
+    "account": "Cuenta",
+    "signInTitle": "Inicia sesión para continuar",
+    "signInCta": "Iniciar sesión",
+    "bodyHistory": "Crea una cuenta gratis para conservar tu historial de análisis entre dispositivos.",
+    "bodyCats": "Crea una cuenta gratis para guardar tus gatos y personalizar los resultados.",
+    "bodyCorrect": "Inicia sesión para corregir las predicciones y ayudar a mejorar el modelo para todos.",
+    "bodyMedical": "Crea una cuenta gratis para llevar el historial médico y el carnet de vacunas de tu gato.",
+    "bodyAssistant": "Inicia sesión para usar el asistente de IA con el historial de tu gato."
   }
 }

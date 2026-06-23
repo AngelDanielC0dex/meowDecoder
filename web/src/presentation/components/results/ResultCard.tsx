@@ -9,7 +9,9 @@ import { formatProbability, formatHz, formatDuration } from "@/presentation/form
 import { ConfidenceBar } from "./ConfidenceBar";
 import { FeedbackForm } from "./FeedbackForm";
 import { ContextualAd } from "./ContextualAd";
+import { StatePhrase } from "./StatePhrase";
 import { Button } from "@/presentation/components/ui/Button";
+import type { VocalizationClass } from "@/domain/analysis/vocalization";
 import type { AppLocale } from "@/i18n/routing";
 
 const CERTAINTY_KEY: Record<CertaintyLevel, "certaintyHigh" | "certaintyMedium" | "certaintyLow"> =
@@ -32,12 +34,20 @@ export function ResultCard({
   const { classification, segment } = session;
   const { primary, alternatives, certainty, ambiguous } = classification;
 
+  // The state shown in the interpretation phrase: the model's prediction, or the
+  // user's correction once they fix it (registered users via the feedback form).
+  const [shownClass, setShownClass] = useState<string>(primary.cls);
+
   const content = getVocalizationByClass(primary.cls);
   const i18n = content?.i18n[locale];
   const f = segment.features;
+  const isUnknown = primary.cls === "unknown";
 
   return (
-    <article aria-labelledby="result-heading" className="flex flex-col gap-6">
+    <article
+      aria-labelledby="result-heading"
+      className="flex flex-col gap-6 rounded-2xl border border-brand-100 bg-surface p-6 shadow-sm sm:p-8"
+    >
       <header className="text-center">
         <p className="text-sm uppercase tracking-wide text-ink-600">{t("primaryLabel")}</p>
         <h2 id="result-heading" className="mt-1 text-title font-bold">
@@ -49,10 +59,21 @@ export function ResultCard({
         {i18n && <p className="mt-2 text-subtitle text-ink-600">{i18n.shortMeaning}</p>}
       </header>
 
-      {ambiguous && (
-        <p role="alert" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
-          ⚠️ {t("ambiguousWarning")}
-        </p>
+      {/* Human interpretation phrase — varies per result and follows a correction.
+          Seeded so it stays identical when this session is revisited in history. */}
+      <StatePhrase cls={shownClass} locale={locale} seed={session.phraseSeed} />
+
+      {isUnknown ? (
+        <div role="alert" className="rounded-lg bg-amber-50 dark:bg-amber-950/50 dark:text-amber-100 p-4 text-sm text-amber-900">
+          <p className="font-semibold">⚠️ {t("unknownTitle")}</p>
+          <p className="mt-1">{t("unknownHint")}</p>
+        </div>
+      ) : (
+        ambiguous && (
+          <p role="alert" className="rounded-lg bg-amber-50 dark:bg-amber-950/50 dark:text-amber-100 p-3 text-sm text-amber-900">
+            ⚠️ {t("ambiguousWarning")}
+          </p>
+        )
       )}
 
       <ConfidenceBar
@@ -60,11 +81,11 @@ export function ResultCard({
         certainty={certainty}
         label={`${t("confidence")} — ${t(CERTAINTY_KEY[certainty])}`}
       />
-      
+
       <ContextualAd predictedClass={primary.cls} />
 
       {alternatives.length > 0 && (
-        <section aria-labelledby="alt-heading">
+        <section aria-labelledby="alt-heading" className="rounded-xl bg-brand-50/40 p-4">
           <h3 id="alt-heading" className="mb-2 text-sm font-semibold">
             {t("alternatives")}
           </h3>
@@ -76,7 +97,9 @@ export function ResultCard({
                   <span>
                     {altContent?.emoji} {altContent?.i18n[locale].name ?? alt.cls}
                   </span>
-                  <span className="text-ink-600">{formatProbability(alt.probability)}</span>
+                  <span className="font-mono text-ink-600">
+                    {formatProbability(alt.probability)}
+                  </span>
                 </li>
               );
             })}
@@ -108,27 +131,30 @@ export function ResultCard({
           type="button"
           aria-expanded={showTech}
           onClick={() => setShowTech((s) => !s)}
-          className="text-sm font-medium text-brand-700 underline"
+          className="text-sm font-medium text-brand-700 underline hover:text-brand-800"
         >
           {t("technicalDetails")}
         </button>
         {showTech && (
-          <dl className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+          <dl className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 rounded-lg bg-ink-200/40 p-3 text-sm">
             <dt className="text-ink-600">{t("duration")}</dt>
-            <dd>{formatDuration(f.durationS)}</dd>
+            <dd className="font-mono">{formatDuration(f.durationS)}</dd>
             <dt className="text-ink-600">{t("pitch")}</dt>
-            <dd>{formatHz(f.f0Hz)}</dd>
+            <dd className="font-mono">{formatHz(f.f0Hz)}</dd>
             <dt className="text-ink-600">{t("brightness")}</dt>
-            <dd>{formatHz(f.spectralCentroidHz)}</dd>
+            <dd className="font-mono">{formatHz(f.spectralCentroidHz)}</dd>
             <dt className="text-ink-600">{t("modulation")}</dt>
-            <dd>{formatHz(f.amRateHz)}</dd>
+            <dd className="font-mono">{formatHz(f.amRateHz)}</dd>
             <dt className="text-ink-600">{t("engineLabel")}</dt>
-            <dd>{classification.modelVersion}</dd>
+            <dd className="font-mono">{classification.modelVersion}</dd>
           </dl>
         )}
       </div>
 
-      <FeedbackForm session={session} />
+      <FeedbackForm
+        session={session}
+        onCorrected={(cls: VocalizationClass) => setShownClass(cls)}
+      />
 
       <p className="text-center text-xs text-ink-600">{t("notScience")}</p>
 

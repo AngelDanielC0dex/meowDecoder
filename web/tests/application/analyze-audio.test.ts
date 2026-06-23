@@ -43,7 +43,7 @@ const fakeEngine: InferenceEngine = {
   modelVersion: "fake-1",
   ready: async () => ok(undefined),
   classify: async () =>
-    ok(buildClassification([{ cls: "meow", probability: 0.9 }], "fake", "fake-1")),
+    ok(buildClassification([{ cls: "atencion", probability: 0.9 }], "fake", "fake-1")),
   dispose: () => {},
 };
 
@@ -51,17 +51,17 @@ describe("analyzeAudio use case", () => {
   it("persists a classified session on success", async () => {
     const saved: unknown[] = [];
     const sessions = {
-      save: async (s: any) => void saved.push(s),
+      save: async (s: unknown) => void saved.push(s),
     } as unknown as SessionRepository;
 
     const res = await analyzeAudio(
       { pipeline: fakePipeline(true), engine: fakeEngine, sessions, telemetry },
-      { audio: new Blob(), source: "file", catId: null, keepAudio: false },
+      { audio: new Blob(), source: "file", catId: null, keepAudio: false, persist: true },
     );
 
     expect(res.ok).toBe(true);
     if (res.ok) {
-      expect(res.value.classification.primary.cls).toBe("meow");
+      expect(res.value.classification.primary.cls).toBe("atencion");
       expect(res.value.audioKey).toBeNull();
     }
     expect(saved).toHaveLength(1);
@@ -71,7 +71,7 @@ describe("analyzeAudio use case", () => {
     const sessions = { save: vi.fn() } as unknown as SessionRepository;
     const res = await analyzeAudio(
       { pipeline: fakePipeline(false), engine: fakeEngine, sessions, telemetry },
-      { audio: new Blob(), source: "microphone", catId: null, keepAudio: false },
+      { audio: new Blob(), source: "microphone", catId: null, keepAudio: false, persist: true },
     );
     expect(res.ok).toBe(false);
     if (!res.ok) expect(res.error.code).toBe("analysis/no-vocalization");
@@ -82,9 +82,21 @@ describe("analyzeAudio use case", () => {
     const sessions = { save: vi.fn(async () => {}) } as unknown as SessionRepository;
     const res = await analyzeAudio(
       { pipeline: fakePipeline(true), engine: fakeEngine, sessions, telemetry },
-      { audio: new Blob(["x"]), source: "file", catId: null, keepAudio: true },
+      { audio: new Blob(["x"]), source: "file", catId: null, keepAudio: true, persist: true },
     );
     expect(res.ok).toBe(true);
     if (res.ok) expect(res.value.audioKey).toMatch(/^audio:/);
+  });
+
+  it("does NOT persist (or keep audio) for an anonymous one-off analysis", async () => {
+    const sessions = { save: vi.fn(async () => {}) } as unknown as SessionRepository;
+    const res = await analyzeAudio(
+      { pipeline: fakePipeline(true), engine: fakeEngine, sessions, telemetry },
+      // Anonymous: persist=false even though keepAudio was left on.
+      { audio: new Blob(["x"]), source: "file", catId: null, keepAudio: true, persist: false },
+    );
+    expect(res.ok).toBe(true);
+    if (res.ok) expect(res.value.audioKey).toBeNull();
+    expect(sessions.save).not.toHaveBeenCalled();
   });
 });

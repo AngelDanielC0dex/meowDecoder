@@ -4,6 +4,8 @@
  * - The eval generators mirror the *parametric family* of
  *   training/src/meowdecoder_training/synthetic.py (different seeds: the
  *   regression test measures within-family generalization, not memorization).
+ *
+ * v2: 11 emotional/behavioral state classes.
  */
 import { SAMPLE_RATE } from "@/infrastructure/dsp/constants";
 
@@ -46,7 +48,6 @@ export function makeParitySignal(kind: string, n: number): Float32Array {
 
 type Rng = () => number;
 const uni = (rng: Rng, lo: number, hi: number) => lo + (hi - lo) * rng();
-/** Box–Muller standard normal from a uniform PRNG. */
 function gauss(rng: Rng): number {
   const u = Math.max(rng(), 1e-12);
   const v = rng();
@@ -94,65 +95,48 @@ function finalize(sig: Float64Array, rng: Rng): Float32Array {
   return out;
 }
 
-export const EVAL_CLASSES = ["meow", "purr", "trill", "hiss", "growl", "yowl"] as const;
+export const EVAL_CLASSES = [
+  "feliz_contento",
+  "trinos",
+  "enfadado",
+  "pelea",
+  "llamada_madre",
+  "llamada_apareamiento",
+  "dolor",
+  "descansando",
+  "advertencia",
+  "atencion",
+] as const;
 export type EvalClass = (typeof EVAL_CLASSES)[number];
 
 export function makeEvalSignal(cls: EvalClass, rng: Rng): Float32Array {
   switch (cls) {
-    case "meow": {
-      const n = Math.floor(uni(rng, 0.4, 1.2) * SAMPLE_RATE);
-      const f0 = uni(rng, 350, 700);
-      const contour = uni(rng, -0.25, 0.15);
-      const freqs = new Float64Array(n);
-      for (let i = 0; i < n; i++) freqs[i] = f0 * (1 + (contour * i) / (n - 1));
-      const sig = harmonicTone(freqs, [1.0, 0.5, 0.25], rng);
+    // Feliz/Contento: harmonic meow with flat pitch (no AM purr, no ascending demand contour)
+    case "feliz_contento": {
+      const n = Math.min(Math.floor(uni(rng, 0.8, 2.5) * SAMPLE_RATE), EVAL_N);
+      const f0 = uni(rng, 250, 650);
+      // Constant pitch — affiliative meow is neither a purr nor a demand cry
+      const freqs = new Float64Array(n).fill(f0);
+      const sig = harmonicTone(freqs, [1.0, 0.4, 0.15], rng);
       const env = envelope(n, rng);
       for (let i = 0; i < n; i++) sig[i]! *= env[i]!;
       return finalize(place(sig, rng), rng);
     }
-    case "purr": {
-      const n = Math.min(Math.floor(uni(rng, 1.3, 1.55) * SAMPLE_RATE), EVAL_N);
-      const f0 = uni(rng, 60, 140);
-      const fAm = uni(rng, 20, 35);
-      const phase = uni(rng, 0, 2 * Math.PI);
-      const freqs = new Float64Array(n).fill(f0);
-      const sig = harmonicTone(freqs, [1.0, 0.4], rng);
-      const env = envelope(n, rng);
-      for (let i = 0; i < n; i++) {
-        const am = 0.5 * (1 + Math.sin((2 * Math.PI * fAm * i) / SAMPLE_RATE + phase));
-        sig[i]! *= 0.6 * am * env[i]!;
-      }
-      return finalize(place(sig, rng), rng);
-    }
-    case "trill": {
-      const n = Math.floor(uni(rng, 0.3, 0.9) * SAMPLE_RATE);
+    // Trinos: short, modulated, high-pitched
+    case "trinos": {
+      const n = Math.floor(uni(rng, 0.2, 0.9) * SAMPLE_RATE);
       const f0 = uni(rng, 450, 800);
       const depth = uni(rng, 80, 200);
       const fMod = uni(rng, 15, 30);
       const freqs = new Float64Array(n);
-      for (let i = 0; i < n; i++) {
-        freqs[i] = f0 + depth * Math.sin((2 * Math.PI * fMod * i) / SAMPLE_RATE);
-      }
+      for (let i = 0; i < n; i++) freqs[i] = f0 + depth * Math.sin((2 * Math.PI * fMod * i) / SAMPLE_RATE);
       const sig = harmonicTone(freqs, [1.0, 0.4], rng);
       const env = envelope(n, rng);
       for (let i = 0; i < n; i++) sig[i]! *= env[i]!;
       return finalize(place(sig, rng), rng);
     }
-    case "hiss": {
-      const n = Math.floor(uni(rng, 0.3, 1.0) * SAMPLE_RATE);
-      const a = uni(rng, 0.5, 0.8);
-      const sig = new Float64Array(n);
-      let prev = 0;
-      for (let i = 0; i < n; i++) {
-        const x = gauss(rng);
-        sig[i] = x - a * prev;
-        prev = x;
-      }
-      const env = envelope(n, rng);
-      for (let i = 0; i < n; i++) sig[i]! *= env[i]!;
-      return finalize(place(sig, rng), rng);
-    }
-    case "growl": {
+    // Enfadado: low-pitched growl
+    case "enfadado": {
       const n = Math.min(Math.floor(uni(rng, 0.8, 1.5) * SAMPLE_RATE), EVAL_N);
       const f0 = uni(rng, 70, 180);
       const freqs = new Float64Array(n);
@@ -167,8 +151,32 @@ export function makeEvalSignal(cls: EvalClass, rng: Rng): Float32Array {
       for (let i = 0; i < n; i++) sig[i]! *= env[i]!;
       return finalize(place(sig, rng), rng);
     }
-    case "yowl": {
-      const n = Math.min(Math.floor(uni(rng, 1.2, 1.55) * SAMPLE_RATE), EVAL_N);
+    // Pelea: high-intensity, wide-range, mixed
+    case "pelea": {
+      const n = Math.floor(uni(rng, 0.5, 2.0) * SAMPLE_RATE);
+      const f0 = uni(rng, 300, 800);
+      const freqs = new Float64Array(n);
+      for (let i = 0; i < n; i++) freqs[i] = f0 + uni(rng, -200, 300) * Math.sin((2 * Math.PI * uni(rng, 3, 8) * i) / SAMPLE_RATE);
+      const sig = harmonicTone(freqs, [1.0, 0.6, 0.3], rng);
+      const env = envelope(n, rng);
+      for (let i = 0; i < n; i++) sig[i]! *= env[i]!;
+      return finalize(place(sig, rng), rng);
+    }
+    // Llamada madre: descending melodic
+    case "llamada_madre": {
+      const n = Math.floor(uni(rng, 0.3, 1.5) * SAMPLE_RATE);
+      const fStart = uni(rng, 500, 700);
+      const fEnd = uni(rng, 250, 450);
+      const freqs = new Float64Array(n);
+      for (let i = 0; i < n; i++) freqs[i] = fStart + (fEnd - fStart) * (i / (n - 1));
+      const sig = harmonicTone(freqs, [1.0, 0.3], rng);
+      const env = envelope(n, rng);
+      for (let i = 0; i < n; i++) sig[i]! *= env[i]!;
+      return finalize(place(sig, rng), rng);
+    }
+    // Llamada apareamiento: long, wide excursion
+    case "llamada_apareamiento": {
+      const n = Math.min(Math.floor(uni(rng, 1.2, 2.5) * SAMPLE_RATE), EVAL_N);
       const fStart = uni(rng, 250, 450);
       const fPeak = uni(rng, 600, 900);
       const fEnd = uni(rng, 300, 500);
@@ -178,6 +186,59 @@ export function makeEvalSignal(cls: EvalClass, rng: Rng): Float32Array {
         freqs[i] = fStart + (fPeak - fStart) * Math.sin(Math.PI * x) + (fEnd - fStart) * x;
       }
       const sig = harmonicTone(freqs, [1.0, 0.5], rng);
+      const env = envelope(n, rng);
+      for (let i = 0; i < n; i++) sig[i]! *= env[i]!;
+      return finalize(place(sig, rng), rng);
+    }
+    // Dolor: high-pitched, urgent, strained
+    case "dolor": {
+      const n = Math.floor(uni(rng, 0.3, 1.5) * SAMPLE_RATE);
+      const f0 = uni(rng, 500, 1000);
+      const freqs = new Float64Array(n);
+      for (let i = 0; i < n; i++) freqs[i] = f0 + uni(rng, -100, 200) * Math.sin((2 * Math.PI * uni(rng, 4, 10) * i) / SAMPLE_RATE);
+      const sig = harmonicTone(freqs, [1.0, 0.3, 0.15], rng);
+      const env = envelope(n, rng);
+      for (let i = 0; i < n; i++) sig[i]! *= env[i]!;
+      return finalize(place(sig, rng), rng);
+    }
+    // Descansando: low sustained AM (purr without meow)
+    case "descansando": {
+      const n = Math.min(Math.floor(uni(rng, 1.5, 3.0) * SAMPLE_RATE), EVAL_N);
+      const f0 = uni(rng, 60, 140);
+      const freqs = new Float64Array(n).fill(f0);
+      const sig = harmonicTone(freqs, [1.0, 0.4], rng);
+      const fAm = uni(rng, 20, 35);
+      const phase = uni(rng, 0, 2 * Math.PI);
+      const env = envelope(n, rng);
+      for (let i = 0; i < n; i++) {
+        const am = 0.5 * (1 + Math.sin((2 * Math.PI * fAm * i) / SAMPLE_RATE + phase));
+        sig[i]! *= 0.7 * am * env[i]!;
+      }
+      return finalize(place(sig, rng), rng);
+    }
+    // Advertencia: broadband hiss
+    case "advertencia": {
+      const n = Math.floor(uni(rng, 0.3, 1.0) * SAMPLE_RATE);
+      const a = uni(rng, 0.5, 0.8);
+      const sig = new Float64Array(n);
+      let prev = 0;
+      for (let i = 0; i < n; i++) {
+        const x = gauss(rng);
+        sig[i] = x - a * prev;
+        prev = x;
+      }
+      const env = envelope(n, rng);
+      for (let i = 0; i < n; i++) sig[i]! *= env[i]!;
+      return finalize(place(sig, rng), rng);
+    }
+    // Atencion: harmonic meow with ascending contour
+    case "atencion": {
+      const n = Math.floor(uni(rng, 0.3, 1.2) * SAMPLE_RATE);
+      const f0 = uni(rng, 350, 700);
+      const contour = uni(rng, 0.05, 0.25);
+      const freqs = new Float64Array(n);
+      for (let i = 0; i < n; i++) freqs[i] = f0 * (1 + (contour * i) / (n - 1));
+      const sig = harmonicTone(freqs, [1.0, 0.5, 0.25], rng);
       const env = envelope(n, rng);
       for (let i = 0; i < n; i++) sig[i]! *= env[i]!;
       return finalize(place(sig, rng), rng);

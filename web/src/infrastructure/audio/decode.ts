@@ -26,11 +26,14 @@ export async function decodeToMono16k(blob: Blob): Promise<Result<Float32Array>>
     return err({ code: "audio/decode-failed", message: "Could not decode audio", cause: e });
   }
 
-  if (decoded.duration < 0.1) {
-    return err({ code: "audio/too-short", message: "Recording shorter than 100 ms" });
+  if (decoded.duration < MIN_DURATION_S) {
+    return err({ code: "audio/too-short", message: "Recording shorter than 500 ms" });
   }
-  if (decoded.duration > 120) {
-    return err({ code: "audio/too-long", message: "Recording longer than 2 minutes" });
+  if (decoded.duration > MAX_DURATION_S) {
+    return err({
+      code: "audio/too-long",
+      message: `Recording longer than ${MAX_DURATION_S} seconds`,
+    });
   }
 
   try {
@@ -47,6 +50,23 @@ export async function decodeToMono16k(blob: Blob): Promise<Result<Float32Array>>
   }
 }
 
-export const ACCEPTED_AUDIO_TYPES = ["audio/wav", "audio/mpeg", "audio/mp4", "audio/x-m4a"];
-export const ACCEPTED_AUDIO_EXTENSIONS = ".wav,.mp3,.m4a,audio/*";
-export const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
+export const ACCEPTED_AUDIO_TYPES = [
+  "audio/wav",
+  "audio/x-wav",
+  "audio/mpeg",
+  "audio/mp4",
+  "audio/x-m4a",
+  "audio/aac",
+  "audio/ogg",
+  "audio/webm",
+  "audio/flac",
+];
+export const ACCEPTED_AUDIO_EXTENSIONS = ".wav,.mp3,.m4a,.aac,.ogg,.oga,.opus,.webm,.flac,audio/*";
+
+/** Shortest accepted clip (s). Below this there is no usable vocalization. */
+export const MIN_DURATION_S = 0.5;
+/** Longest accepted clip (s). A cat vocalization sample fits well under this. */
+export const MAX_DURATION_S = 20;
+/** Upload size cap. 20 s of audio in any common format stays far below this. */
+export const MAX_UPLOAD_BYTES = 12 * 1024 * 1024;
+export const MAX_UPLOAD_MB = Math.round(MAX_UPLOAD_BYTES / (1024 * 1024));

@@ -7,7 +7,15 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       // Keep user-data and API surfaces out of crawlers.
-      disallow: ["/api/", "/*/analyze", "/*/cats", "/*/history"],
+      disallow: [
+        "/api/",
+        "/*/analyze",
+        "/*/cats",
+        "/*/history",
+        "/*/medical",
+        "/*/cards",
+        "/*/admin",
+      ],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
     host: SITE_URL,

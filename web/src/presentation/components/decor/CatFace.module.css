@@ -1,0 +1,215 @@
+/* Blinking, looking-around cat face. Compiled from the source SCSS to plain CSS
+   (the project uses Tailwind v4 / PostCSS, no Sass). Two exact colorways so the
+   cat stays "hidden" against each theme's surface, with the opposite-colour ears
+   / muzzle / pupils as the visible outline:
+     · light theme → WHITE face (blends into white) + black ears/muzzle
+     · dark theme  → BLACK face (blends into black) + white ears/eyes/muzzle
+   Some parts (eye, eye tip, pupil, glare) are the same in both colorways, so only
+   the differing parts are theme variables. prefers-reduced-motion freezes the
+   animations open-eyed (handled globally). */
+
+.cat {
+  --cat-size: 170px;
+  /* Light theme defaults (a white cat hiding on the light surface). */
+  --cat-face: #fff;
+  --cat-ear: #161616;
+  --cat-tuft: #fff;
+  --cat-eyelid: #fff;
+  --cat-muzzle: #161616;
+  /* Constant in both themes. */
+  --cat-eye: #fff;
+  --cat-tip: #fff;
+  --cat-pupil: #161616;
+  --cat-glare: #fff;
+  position: relative;
+  height: var(--cat-size);
+  width: calc(var(--cat-size) * 1.13);
+}
+
+/* Dark theme: a black cat hiding on the dark surface (white outline parts). */
+:global(.dark) .cat {
+  --cat-face: #161616;
+  --cat-ear: #fff;
+  --cat-tuft: #161616;
+  --cat-eyelid: #161616;
+  --cat-muzzle: #fff;
+}
+
+.ear {
+  position: absolute;
+  top: -30%;
+  height: 60%;
+  width: 25%;
+  background: var(--cat-ear);
+}
+.ear::before,
+.ear::after {
+  content: "";
+  position: absolute;
+  bottom: 24%;
+  height: 10%;
+  width: 5%;
+  border-radius: 50%;
+  background: var(--cat-tuft);
+}
+.ear::after {
+  transform-origin: 50% 100%;
+}
+
+.earLeft {
+  left: -7%;
+  border-radius: 70% 30% 0% 0% / 100% 100% 0% 0%;
+  transform: rotate(-15deg);
+}
+.earLeft::before,
+.earLeft::after {
+  right: 10%;
+}
+.earLeft::after {
+  transform: rotate(-45deg);
+}
+
+.earRight {
+  right: -7%;
+  border-radius: 30% 70% 0% 0% / 100% 100% 0% 0%;
+  transform: rotate(15deg);
+}
+.earRight::before,
+.earRight::after {
+  left: 10%;
+}
+.earRight::after {
+  transform: rotate(45deg);
+}
+
+.face {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: var(--cat-face);
+  border-radius: 50%;
+}
+
+.eye {
+  position: absolute;
+  top: 35%;
+  height: 30%;
+  width: 31%;
+  background: var(--cat-eye);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+}
+.eye::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0;
+  width: 100%;
+  border-radius: 0 0 50% 50% / 0 0 40% 40%;
+  background: var(--cat-eyelid);
+  animation: catBlink 4s infinite ease-in;
+}
+.eye::before {
+  content: "";
+  position: absolute;
+  top: 60%;
+  height: 10%;
+  width: 15%;
+  background: var(--cat-tip);
+  border-radius: 50%;
+}
+
+.eyeLeft {
+  left: 0;
+}
+.eyeLeft::before {
+  right: -5%;
+}
+.eyeRight {
+  right: 0;
+}
+.eyeRight::before {
+  left: -5%;
+}
+
+.eyePupil {
+  position: absolute;
+  top: 25%;
+  height: 50%;
+  width: 20%;
+  background: var(--cat-pupil);
+  border-radius: 50%;
+  animation: catLookAround 4s infinite;
+}
+.eyeLeft .eyePupil {
+  right: 30%;
+}
+.eyeRight .eyePupil {
+  left: 30%;
+}
+.eyePupil::after {
+  content: "";
+  position: absolute;
+  top: 30%;
+  right: -5%;
+  height: 20%;
+  width: 35%;
+  border-radius: 50%;
+  background: var(--cat-glare);
+}
+
+.muzzle {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  height: 6%;
+  width: 10%;
+  background: var(--cat-muzzle);
+  transform: translateX(-50%);
+  border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+}
+
+@keyframes catBlink {
+  0% {
+    height: 0;
+  }
+  90% {
+    height: 0;
+  }
+  92.5% {
+    height: 100%;
+  }
+  95% {
+    height: 0;
+  }
+  97.5% {
+    height: 100%;
+  }
+  100% {
+    height: 0;
+  }
+}
+
+@keyframes catLookAround {
+  0% {
+    transform: translate(0);
+  }
+  5% {
+    transform: translate(50%, -25%);
+  }
+  10% {
+    transform: translate(50%, -25%);
+  }
+  15% {
+    transform: translate(-100%, -25%);
+  }
+  20% {
+    transform: translate(-100%, -25%);
+  }
+  25% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}

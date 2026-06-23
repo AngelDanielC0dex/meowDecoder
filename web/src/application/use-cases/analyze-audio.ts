@@ -23,6 +23,11 @@ export interface AnalyzeAudioRequest {
   readonly catId: CatId | null;
   /** Keep the audio locally so the user can replay it from history. */
   readonly keepAudio: boolean;
+  /**
+   * Persist the session (and audio) to history. Registered users persist;
+   * anonymous visitors analyze one-off, so the result is shown but never stored.
+   */
+  readonly persist: boolean;
   /** The selected cat's learned priors, blended into the prediction. */
   readonly priors?: CatPriors;
   readonly onProgress?: (p: PipelineProgress) => void;
@@ -81,10 +86,19 @@ export async function analyzeAudio(
     recordingDurationS: processed.value.recordingDurationS,
     segment: best,
     classification: classified.value,
-    audioKey: req.keepAudio ? `audio:${crypto.randomUUID()}` : null,
+    // Audio is only retained when the session is persisted (registered user who
+    // opted in). Anonymous one-off analyses never keep audio.
+    audioKey: req.persist && req.keepAudio ? `audio:${crypto.randomUUID()}` : null,
+    // Stable seed so the interpretation phrase is consistent across the result
+    // view and history (see AnalysisSession.phraseSeed).
+    phraseSeed: Math.floor(Math.random() * 100_000),
   };
 
-  await deps.sessions.save(session, req.keepAudio ? req.audio : null);
+  // Anonymous visitors get the result on screen but nothing is written to the
+  // history store (no persistence, no audio) — analysis is one-off for them.
+  if (req.persist) {
+    await deps.sessions.save(session, req.keepAudio ? req.audio : null);
+  }
 
   deps.telemetry.track({
     name: "analysis_completed",

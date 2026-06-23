@@ -1,13 +1,16 @@
 import type {
+  CatPhotoRepository,
   CatPriorsRepository,
   CatRepository,
   FeedbackRepository,
   SessionRepository,
   SettingsRepository,
+  VaccinationRepository,
 } from "@/application/ports/repositories";
-import type { Cat } from "@/domain/cat/cat";
+import { normalizeCat, type Cat } from "@/domain/cat/cat";
 import type { AnalysisSession } from "@/domain/analysis/session";
 import type { FeedbackEntry } from "@/domain/feedback/feedback";
+import type { VaccinationRecord, VaccinationDraft } from "@/domain/cat/vaccination";
 import {
   emptyCatPriors,
   reinforceCatPriors,
@@ -22,16 +25,33 @@ export class IdbCatRepository implements CatRepository {
   async getAll(): Promise<readonly Cat[]> {
     const db = await getDb();
     const cats = await db.getAll("cats");
-    return cats.sort((a, b) => a.createdAt - b.createdAt);
+    return cats.map(normalizeCat).sort((a, b) => a.createdAt - b.createdAt);
   }
   async getById(id: CatId): Promise<Cat | null> {
-    return (await (await getDb()).get("cats", id)) ?? null;
+    const cat = await (await getDb()).get("cats", id);
+    return cat ? normalizeCat(cat) : null;
   }
   async save(cat: Cat): Promise<void> {
     await (await getDb()).put("cats", cat);
   }
   async delete(id: CatId): Promise<void> {
-    await (await getDb()).delete("cats", id);
+    const db = await getDb();
+    // Cascade: a deleted cat takes its photo with it (no orphan blobs).
+    await Promise.all([db.delete("cats", id), db.delete("catPhotos", id)]);
+  }
+}
+
+/** Per-cat photo blob, stored locally (IndexedDB). Used by the presentation card. */
+export class IdbCatPhotoRepository implements CatPhotoRepository {
+  async get(catId: CatId): Promise<Blob | null> {
+    const entry = await (await getDb()).get("catPhotos", catId);
+    return entry?.blob ?? null;
+  }
+  async put(catId: CatId, blob: Blob): Promise<void> {
+    await (await getDb()).put("catPhotos", { catId, blob, updatedAt: Date.now() });
+  }
+  async delete(catId: CatId): Promise<void> {
+    await (await getDb()).delete("catPhotos", catId);
   }
 }
 
@@ -46,6 +66,9 @@ export class IdbSessionRepository implements SessionRepository {
         .put({ key: session.audioKey, blob: audio, createdAt: session.createdAt });
     }
     await tx.done;
+    // Keep on-device audio under the storage budget. Fire-and-forget so it never
+    // blocks the result; only needed when a blob was actually stored.
+    if (audio && session.audioKey) void purgeOldAudioIfNeeded(db);
   }
 
   async getRecent(limit: number, catId?: CatId): Promise<readonly AnalysisSession[]> {
@@ -118,5 +141,22 @@ export class IdbCatPriorsRepository implements CatPriorsRepository {
     const priors = reinforceCatPriors(existing?.priors ?? emptyCatPriors(), cls);
     await tx.store.put({ catId, priors });
     await tx.done;
+  }
+}
+
+export class IdbVaccinationRepository implements VaccinationRepository {
+  async getByCat(catId: CatId): Promise<readonly VaccinationRecord[]> {
+    const records = await (await getDb()).getAllFromIndex("vaccinations", "by-cat", catId);
+    return records.sort((a, b) => b.administeredOn - a.administeredOn);
+  }
+
+  async add(draft: VaccinationDraft): Promise<VaccinationRecord> {
+    const record: VaccinationRecord = { ...draft, id: crypto.randomUUID() };
+    await (await getDb()).put("vaccinations", record);
+    return record;
+  }
+
+  async delete(id: string): Promise<void> {
+    await (await getDb()).delete("vaccinations", id);
   }
 }

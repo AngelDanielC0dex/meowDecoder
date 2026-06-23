@@ -2,6 +2,7 @@ import type { Cat } from "@/domain/cat/cat";
 import type { AnalysisSession } from "@/domain/analysis/session";
 import type { FeedbackEntry } from "@/domain/feedback/feedback";
 import type { CatPriors, CorrectableClass } from "@/domain/analysis/cat-priors";
+import type { VaccinationRecord, VaccinationDraft } from "@/domain/cat/vaccination";
 import type { CatId, SessionId } from "@/domain/shared/ids";
 
 export interface CatRepository {
@@ -9,6 +10,12 @@ export interface CatRepository {
   getById(id: CatId): Promise<Cat | null>;
   save(cat: Cat): Promise<void>;
   delete(id: CatId): Promise<void>;
+}
+
+export interface CatPhotoRepository {
+  get(catId: CatId): Promise<Blob | null>;
+  put(catId: CatId, blob: Blob): Promise<void>;
+  delete(catId: CatId): Promise<void>;
 }
 
 export interface SessionRepository {
@@ -36,4 +43,10 @@ export interface CatPriorsRepository {
   get(catId: CatId): Promise<CatPriors>;
   /** Reinforces one class for a cat (called when a correction is recorded). */
   reinforce(catId: CatId, cls: CorrectableClass): Promise<void>;
+}
+
+export interface VaccinationRepository {
+  getByCat(catId: CatId): Promise<readonly VaccinationRecord[]>;
+  add(draft: VaccinationDraft): Promise<VaccinationRecord>;
+  delete(id: string): Promise<void>;
 }

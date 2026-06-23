@@ -6,15 +6,18 @@ import {
 } from "@/domain/analysis/cat-priors";
 import type { ClassScore } from "@/domain/analysis/classification";
 
-// An intentionally ambiguous distribution: meow barely beats trill.
 const ambiguous: ClassScore[] = [
-  { cls: "meow", probability: 0.3 },
-  { cls: "trill", probability: 0.28 },
-  { cls: "purr", probability: 0.12 },
-  { cls: "hiss", probability: 0.1 },
-  { cls: "growl", probability: 0.08 },
-  { cls: "yowl", probability: 0.07 },
-  { cls: "unknown", probability: 0.05 },
+  { cls: "atencion", probability: 0.3 },
+  { cls: "trinos", probability: 0.28 },
+  { cls: "feliz_contento", probability: 0.12 },
+  { cls: "advertencia", probability: 0.1 },
+  { cls: "enfadado", probability: 0.08 },
+  { cls: "llamada_apareamiento", probability: 0.07 },
+  { cls: "dolor", probability: 0.03 },
+  { cls: "descansando", probability: 0.01 },
+  { cls: "pelea", probability: 0.004 },
+  { cls: "llamada_madre", probability: 0.006 },
+  { cls: "unknown", probability: 0 },
 ];
 
 describe("per-cat priors", () => {
@@ -28,33 +31,37 @@ describe("per-cat priors", () => {
 
   it("shifts an ambiguous call toward a repeatedly-corrected class", () => {
     let priors = emptyCatPriors();
-    for (let i = 0; i < 8; i++) priors = reinforceCatPriors(priors, "trill");
+    for (let i = 0; i < 8; i++) priors = reinforceCatPriors(priors, "trinos");
 
     const out = [...applyCatPriors(ambiguous, priors)].sort(
       (a, b) => b.probability - a.probability,
     );
-    expect(out[0]!.cls).toBe("trill");
+    expect(out[0]!.cls).toBe("trinos");
   });
 
   it("does NOT flip a clear, confident prediction after a single correction", () => {
     const clear: ClassScore[] = [
-      { cls: "purr", probability: 0.9 },
-      { cls: "meow", probability: 0.05 },
-      { cls: "trill", probability: 0.02 },
-      { cls: "hiss", probability: 0.01 },
-      { cls: "growl", probability: 0.01 },
-      { cls: "yowl", probability: 0.005 },
-      { cls: "unknown", probability: 0.005 },
+      { cls: "feliz_contento", probability: 0.9 },
+      { cls: "atencion", probability: 0.05 },
+      { cls: "trinos", probability: 0.02 },
+      { cls: "advertencia", probability: 0.01 },
+      { cls: "enfadado", probability: 0.005 },
+      { cls: "dolor", probability: 0.005 },
+      { cls: "descansando", probability: 0.005 },
+      { cls: "pelea", probability: 0.002 },
+      { cls: "llamada_madre", probability: 0.001 },
+      { cls: "llamada_apareamiento", probability: 0.001 },
+      { cls: "unknown", probability: 0.001 },
     ];
-    const priors = reinforceCatPriors(emptyCatPriors(), "meow");
+    const priors = reinforceCatPriors(emptyCatPriors(), "atencion");
     const out = [...applyCatPriors(clear, priors)].sort(
       (a, b) => b.probability - a.probability,
     );
-    expect(out[0]!.cls).toBe("purr");
+    expect(out[0]!.cls).toBe("feliz_contento");
   });
 
   it("keeps the distribution normalized to ~1", () => {
-    const priors = reinforceCatPriors(emptyCatPriors(), "purr");
+    const priors = reinforceCatPriors(emptyCatPriors(), "feliz_contento");
     const sum = applyCatPriors(ambiguous, priors).reduce((s, x) => s + x.probability, 0);
     expect(sum).toBeCloseTo(1, 5);
   });

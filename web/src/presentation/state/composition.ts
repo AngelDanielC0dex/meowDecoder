@@ -1,11 +1,13 @@
 import { WorkerAudioPipeline } from "@/infrastructure/audio/worker-pipeline";
 import { selectEngine } from "@/infrastructure/inference/engine-registry";
 import {
+  IdbCatPhotoRepository,
   IdbCatPriorsRepository,
   IdbCatRepository,
   IdbFeedbackRepository,
   IdbSessionRepository,
   IdbSettingsRepository,
+  IdbVaccinationRepository,
 } from "@/infrastructure/persistence/repositories";
 import { telemetry } from "@/infrastructure/telemetry/telemetry";
 import type { InferenceEngine } from "@/application/ports/inference-engine";
@@ -29,9 +31,11 @@ export const container = {
     return (enginePromise ??= selectEngine());
   },
   cats: new IdbCatRepository(),
+  catPhotos: new IdbCatPhotoRepository(),
   sessions: new IdbSessionRepository(),
   feedback: new IdbFeedbackRepository(),
   settings: new IdbSettingsRepository(),
   catPriors: new IdbCatPriorsRepository(),
+  vaccinations: new IdbVaccinationRepository(),
   telemetry,
 };

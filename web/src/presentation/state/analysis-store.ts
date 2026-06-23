@@ -18,7 +18,11 @@ interface AnalysisState {
 
   setSelectedCat: (id: CatId | null) => void;
   setKeepAudio: (keep: boolean) => void;
-  analyze: (audio: Blob, source: AudioSourceKind) => Promise<void>;
+  /**
+   * `persist` comes from the caller's access tier: registered users save to
+   * history, anonymous visitors analyze one-off (the use case skips the save).
+   */
+  analyze: (audio: Blob, source: AudioSourceKind, persist: boolean) => Promise<void>;
   reset: () => void;
 }
 
@@ -39,7 +43,7 @@ export const useAnalysisStore = create<AnalysisState>((set, get) => ({
   setSelectedCat: (id) => set({ selectedCatId: id }),
   setKeepAudio: (keep) => set({ keepAudio: keep }),
 
-  analyze: async (audio, source) => {
+  analyze: async (audio, source, persist) => {
     set({ status: "processing", stage: "decoding", session: null, errorCode: null });
     const engine = await container.engine();
     const catId = get().selectedCatId;
@@ -57,6 +61,7 @@ export const useAnalysisStore = create<AnalysisState>((set, get) => ({
         source,
         catId,
         keepAudio: get().keepAudio,
+        persist,
         ...(priors ? { priors } : {}),
         onProgress: (p) => set({ stage: p.stage }),
       },

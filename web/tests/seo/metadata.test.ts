@@ -7,7 +7,7 @@ import { routing } from "@/i18n/routing";
  * the default locale (de-indexing risk for non-default languages).
  * The canonical MUST be self-referential per locale, and x-default MUST exist.
  */
-const PUBLIC_PATHS = ["/", "/sounds/meow", "/sounds/purr"];
+const PUBLIC_PATHS = ["/", "/sounds/feliz-contento", "/sounds/advertencia"];
 
 describe("SEO metadata alternates", () => {
   for (const locale of routing.locales) {

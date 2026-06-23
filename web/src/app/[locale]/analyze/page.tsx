@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { AppLocale } from "@/i18n/routing";
 import { buildPageMetadata } from "@/lib/seo";
 import { AnalyzePanel } from "@/presentation/components/analyze/AnalyzePanel";
+import { AdRailsLayout } from "@/presentation/components/ads/AdRailsLayout";
 
 export async function generateMetadata({
   params,
@@ -33,9 +34,11 @@ export default async function AnalyzePage({
   const t = await getTranslations("analyze");
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10">
-      <h1 className="mb-6 text-title font-bold">{t("title")}</h1>
-      <AnalyzePanel />
-    </div>
+    <AdRailsLayout>
+      <div className="mx-auto max-w-2xl px-4 py-10">
+        <h1 className="mb-6 text-title font-bold">{t("title")}</h1>
+        <AnalyzePanel />
+      </div>
+    </AdRailsLayout>
   );
 }

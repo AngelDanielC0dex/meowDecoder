@@ -1,20 +1,14 @@
 /**
- * Vocalization taxonomy v1.
+ * Vocalization taxonomy v2 — 11 emotional/behavioral states.
  *
- * Classes are chosen to be (a) acoustically separable, (b) meaningful to users,
- * (c) supported by feline bioacoustics literature (Schötz et al., Tavernier et al.).
- * `unknown` is a first-class citizen: when the signal is ambiguous the product
- * says so instead of guessing.
+ * SINGLE SOURCE OF TRUTH: MODEL_OUTPUT_CLASSES in contract.ts defines the
+ * canonical 11-class list (model output order). VOCALIZATION_CLASSES adds
+ * "unknown" (a product-level policy, not a model output) and is the type
+ * used throughout the UI.  Never duplicate the class list elsewhere.
  */
-export const VOCALIZATION_CLASSES = [
-  "meow",
-  "purr",
-  "trill",
-  "hiss",
-  "growl",
-  "yowl",
-  "unknown",
-] as const;
+import { MODEL_OUTPUT_CLASSES } from "./contract";
+
+export const VOCALIZATION_CLASSES = [...MODEL_OUTPUT_CLASSES, "unknown"] as const;
 
 export type VocalizationClass = (typeof VOCALIZATION_CLASSES)[number];
 

@@ -12,11 +12,24 @@ import { container } from "@/presentation/state/composition";
 import { Button } from "@/presentation/components/ui/Button";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { submitFeedbackAction } from "@/server/actions/submit-feedback";
+import { useAuth } from "@/presentation/hooks/useAuth";
+import { SignInGate } from "@/presentation/components/auth/SignInGate";
+import { InterstitialAd } from "@/presentation/components/ads/InterstitialAd";
+import { StatePhrase } from "./StatePhrase";
 import type { AppLocale } from "@/i18n/routing";
 
-export function FeedbackForm({ session }: { session: AnalysisSession }) {
+export function FeedbackForm({
+  session,
+  onCorrected,
+}: {
+  session: AnalysisSession;
+  /** Notifies the parent of the corrected class so the UI (e.g. the
+   *  interpretation phrase) can reflect the user's fix immediately. */
+  onCorrected?: (cls: VocalizationClass) => void;
+}) {
   const t = useTranslations("result");
   const locale = useLocale() as AppLocale;
+  const { accountsEnabled, isAuthenticated, status } = useAuth();
   const [verdict, setVerdict] = useState<FeedbackVerdict | null>(null);
   const [corrected, setCorrected] = useState<VocalizationClass | "">("");
   const [share, setShare] = useState(false);
@@ -31,6 +44,8 @@ export function FeedbackForm({ session }: { session: AnalysisSession }) {
   };
 
   const save = async (v: FeedbackVerdict, correctedClass: VocalizationClass | null) => {
+    // Reflect the correction in the parent UI (interpretation phrase) right away.
+    if (correctedClass) onCorrected?.(correctedClass);
     // Step 1: Always save locally (IndexedDB) — works offline, no server needed.
     const res = await recordFeedback(
       {
@@ -60,10 +75,18 @@ export function FeedbackForm({ session }: { session: AnalysisSession }) {
 
   if (submitted) {
     return (
-      <p role="status" className="rounded-lg bg-green-50 p-3 text-sm text-green-800">
+      <p role="status" className="rounded-lg bg-green-50 p-3 text-sm text-green-800 dark:bg-green-950/50 dark:text-green-200">
         {t("feedbackThanks")}
       </p>
     );
+  }
+
+  // Registered-only feature: anonymous visitors can analyze but not correct, so
+  // their corrections can't pollute the training signal. Only gates when the
+  // accounts feature is live; otherwise the legacy local-first flow is kept.
+  if (accountsEnabled && !isAuthenticated) {
+    if (status === "loading") return null;
+    return <SignInGate context="correct" />;
   }
 
   return (
@@ -83,6 +106,15 @@ export function FeedbackForm({ session }: { session: AnalysisSession }) {
 
       {verdict && verdict !== "correct" && (
         <div className="mt-4 flex flex-col gap-3">
+          {/* Mandatory correction-moment ad (free users); surfaces the cat's
+              interpretation phrase. Premium users see nothing. */}
+          <InterstitialAd>
+            <StatePhrase
+              cls={session.classification.primary.cls}
+              locale={locale}
+              seed={session.phraseSeed}
+            />
+          </InterstitialAd>
           <label className="text-sm">
             <span className="mb-1 block font-medium">{t("feedbackCorrectionPrompt")}</span>
             <select

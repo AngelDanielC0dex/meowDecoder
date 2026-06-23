@@ -1,14 +1,31 @@
 @import "tailwindcss";
 
+/* Manual dark mode driven by a `.dark` class on <html> (set by ThemeProvider +
+   the anti-FOUC inline script). We do NOT use the bare media query so the user's
+   explicit choice always wins; the provider applies `.dark` for system-dark too. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  /* Brand palette — warm, trustworthy, high contrast (WCAG AA on white) */
-  --color-brand-50: #fdf6ef;
-  --color-brand-100: #f9e8d8;
-  --color-brand-500: #c2571b;
-  --color-brand-600: #a34715; /* 4.8:1 on white */
-  --color-brand-700: #83390f;
+  /* Brand palette — soft "cat-paw pink". Accent shades (300–900) are CONSTANT
+     across themes (a saturated rose reads well as a bg+white-text button on
+     both light and dark). The light TINT shades (50–200) and the neutral
+     surface/ink scale are remapped under `.dark` below so existing utilities
+     (bg-surface, bg-brand-50, border-brand-100, text-ink-900) adapt for free. */
+  --color-brand-50: #fdf2f6;
+  --color-brand-100: #fbe1ec;
+  --color-brand-200: #f6c2d6;
+  --color-brand-300: #ee9cbb;
+  --color-brand-400: #e36e98;
+  --color-brand-500: #d6447a;
+  --color-brand-600: #bf3568; /* 5.3:1 on white */
+  --color-brand-700: #97264f;
+  --color-brand-800: #6e1a39;
+  --color-brand-900: #4a1126;
   --color-ink-900: #1c1917;
+  --color-ink-700: #292524;
   --color-ink-600: #57534e;
+  --color-ink-400: #a8a29e;
+  --color-ink-200: #e7e5e4;
   --color-surface: #fffdfa;
 
   /* Fluid typography: scales between 360px and 1280px viewports */
@@ -20,21 +37,109 @@
   --spacing-section: clamp(3rem, 2rem + 4vw, 6rem);
 }
 
+/* Decorative paw-print tint for the animated background layer (PawBackground).
+   Stored as space-separated RGB channels so it can be used with an alpha:
+   `rgb(var(--paw-color) / 0.08)`. Light: a barely-there warm grey on the
+   near-white surface; dark: a soft dark grey on the near-black surface — both
+   read as a subtle texture, never as content. */
+:root {
+  --paw-color: 168 156 172;
+}
+
+/* Dark theme: warm near-black surface, inverted ink scale, dark warm tints.
+   Contrast targets verified WCAG AA on the dark surface (#1a1714):
+   ink-900 ~16:1, ink-700 ~13:1, ink-600 ~8:1, ink-400 ~4.6:1. The brand TINT
+   shades flip to dark so cards/borders/chips read correctly; brand 300–900 stay. */
+.dark {
+  --color-surface: #1a1714;
+  --color-ink-900: #f7f4f1;
+  --color-ink-700: #ece6e0;
+  --color-ink-600: #c5bdb4;
+  --color-ink-400: #948d84;
+  --color-ink-200: #38322c;
+  --color-brand-50: #2a141c;
+  --color-brand-100: #3a1a26;
+  --color-brand-200: #4d2433;
+  --paw-color: 96 86 98;
+}
+
 html {
   scroll-behavior: smooth;
+  /* Keeps #anchor jumps (and snapped sections) clear of the sticky header. */
+  scroll-padding-top: 4.5rem;
+}
+
+/* Section scroll-snap is DESKTOP-ONLY: phones/tablets scroll normally (no snap,
+   and the SectionDots are hidden < lg too). Sections opt in with `snap-start`;
+   `proximity` snaps to a nearby section on settle without trapping tall ones. */
+@media (min-width: 1024px) {
+  html {
+    scroll-snap-type: y proximity;
+  }
 }
 
 body {
   background: var(--color-surface);
   color: var(--color-ink-900);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.6;
+  /* Smooth the theme switch without animating page content. */
+  transition: background-color 200ms ease-out, color 200ms ease-out;
 }
 
-/* Visible, consistent focus for keyboard users */
+/* Brand-tinted text selection (small senior detail, fully legible) */
+::selection {
+  background: var(--color-brand-200);
+  color: var(--color-ink-900);
+}
+
+/* Headings: tighter leading + balanced wrapping so titles don't orphan a word */
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+/* Visible, consistent focus for keyboard users (WCAG 2.4.7) */
 :focus-visible {
   outline: 3px solid var(--color-brand-600);
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* Subtle interactive lift for cards/buttons (respects reduced motion) */
+.interactive {
+  transition:
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 200ms ease-out,
+    background-color 200ms ease-out;
+}
+.interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -10px rgb(151 38 79 / 0.18);
+}
+.interactive:active {
+  transform: translateY(-1px);
+}
+
+/* Decorative gradient ring (used in hero, aria-hidden) */
+.hero-glow {
+  background: radial-gradient(
+    60% 80% at 50% 0%,
+    rgb(246 194 214 / 0.55) 0%,
+    rgb(255 253 250 / 0) 70%
+  );
+}
+/* Subtler, warmer glow on dark so it reads as ambient light, not a bright blob. */
+.dark .hero-glow {
+  background: radial-gradient(
+    60% 80% at 50% 0%,
+    rgb(191 53 104 / 0.22) 0%,
+    rgb(26 23 20 / 0) 70%
+  );
 }
 
 /* Respect user motion preferences (WCAG 2.3.3) */
@@ -48,6 +153,31 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  .interactive:hover,
+  .interactive:active {
+    transform: none;
+  }
+}
+
+/* Print: produce a clean "carnet" (PDF via the browser print dialog). Hides
+   app chrome, ads and interactive controls so only the record content prints. */
+@media print {
+  header,
+  footer,
+  [data-ad-slot],
+  [data-ad-rail],
+  .no-print,
+  button,
+  select,
+  input {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+  main {
+    padding: 0;
   }
 }
 

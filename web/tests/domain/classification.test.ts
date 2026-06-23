@@ -5,14 +5,14 @@ describe("buildClassification", () => {
   it("picks the highest-probability class as primary", () => {
     const c = buildClassification(
       [
-        { cls: "meow", probability: 0.7 },
-        { cls: "trill", probability: 0.2 },
-        { cls: "purr", probability: 0.1 },
+        { cls: "atencion", probability: 0.7 },
+        { cls: "trinos", probability: 0.2 },
+        { cls: "feliz_contento", probability: 0.1 },
       ],
       "e",
       "v",
     );
-    expect(c.primary.cls).toBe("meow");
+    expect(c.primary.cls).toBe("atencion");
     expect(c.certainty).toBe("high");
     expect(c.ambiguous).toBe(false);
   });
@@ -20,8 +20,8 @@ describe("buildClassification", () => {
   it("flags a close top-2 as ambiguous", () => {
     const c = buildClassification(
       [
-        { cls: "meow", probability: 0.42 },
-        { cls: "trill", probability: 0.4 },
+        { cls: "atencion", probability: 0.42 },
+        { cls: "trinos", probability: 0.4 },
       ],
       "e",
       "v",
@@ -32,8 +32,8 @@ describe("buildClassification", () => {
   it("treats very low confidence as low certainty", () => {
     const c = buildClassification(
       [
-        { cls: "meow", probability: 0.3 },
-        { cls: "purr", probability: 0.25 },
+        { cls: "atencion", probability: 0.3 },
+        { cls: "feliz_contento", probability: 0.25 },
       ],
       "e",
       "v",
@@ -45,10 +45,10 @@ describe("buildClassification", () => {
   it("keeps at most two alternatives and drops negligible ones", () => {
     const c = buildClassification(
       [
-        { cls: "meow", probability: 0.6 },
-        { cls: "trill", probability: 0.25 },
-        { cls: "purr", probability: 0.13 },
-        { cls: "hiss", probability: 0.02 },
+        { cls: "atencion", probability: 0.6 },
+        { cls: "trinos", probability: 0.25 },
+        { cls: "feliz_contento", probability: 0.13 },
+        { cls: "advertencia", probability: 0.02 },
       ],
       "e",
       "v",

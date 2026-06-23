@@ -1,20 +1,80 @@
 {
-  "schemaVersion": 1,
-  "modelVersion": "mlp-synthetic-2026.06.0",
-  "fileName": "model.onnx",
+  "schemaVersion": 2,
+  "modelVersion": "yamnet-11cls-2026.06.2",
+  "architecture": "yamnet-transfer-learning",
+  "headModel": "meow_decoder_head_int8.onnx",
+  "yamnetModel": "yamnet.onnx",
   "classes": [
-    "meow",
-    "purr",
-    "trill",
-    "hiss",
-    "growl",
-    "yowl"
+    "feliz_contento",
+    "trinos",
+    "enfadado",
+    "pelea",
+    "llamada_madre",
+    "llamada_apareamiento",
+    "dolor",
+    "descansando",
+    "caza",
+    "advertencia",
+    "atencion"
   ],
   "input": {
-    "kind": "log-mel",
+    "kind": "waveform",
     "sampleRate": 16000,
-    "nMels": 64,
-    "nFrames": 96,
-    "windowS": 1.552
+    "channels": 1,
+    "embeddingDim": 1024,
+    "aggregation": "mean_std",
+    "yamnetFrameS": 0.96,
+    "yamnetHopS": 0.48
+  },
+  "output": {
+    "kind": "softmax",
+    "numClasses": 11,
+    "tensorOutputName": "softmax_logits"
+  },
+  "smoothing": {
+    "windowS": 3.0,
+    "emaAlpha": 0.3,
+    "minConfidence": 0.45
+  },
+  "training": {
+    "arch": {
+      "layers": [256, 128],
+      "dropout": [0.5, 0.4],
+      "l2Reg": 1.0e-4,
+      "aggregation": "mean_std",
+      "inputDim": 2048
+    },
+    "data": {
+      "totalSamples": 4216,
+      "totalCats": 24,
+      "augmentationFactor": 3,
+      "datasets": {
+        "pandeya": "100 samples (10/clase), 1 cat_id sintetico por clase",
+        "catmeows": "440 samples, 21 gatos → 3 clases (feliz/dolor/atencion)",
+        "meow10k": "333 audios, 300 cats → descansando y pelea",
+        "freesound": "132 previews, ~30 cats unicos/clase → trinos/llamada_madre/llamada_apareamiento/caza"
+      }
+    },
+    "evaluation": {
+      "stratifiedGroupKFold": 5,
+      "cvMacroF1Mean": 0.342,
+      "cvMacroF1Std": 0.026,
+      "bestFoldMacroF1": 0.380,
+      "trainSetMacroF1": 0.728,
+      "perClassF1": {
+        "feliz_contento": 0.61,
+        "trinos": 0.52,
+        "enfadado": 0.92,
+        "pelea": 0.74,
+        "llamada_madre": 0.76,
+        "llamada_apareamiento": 0.78,
+        "dolor": 0.73,
+        "descansando": 0.89,
+        "caza": 0.63,
+        "advertencia": 0.89,
+        "atencion": 0.54
+      }
+    },
+    "limitation": "7 de 11 clases tienen 1 cat_id unico (Pandeya sintetico). CV macro-F1=0.34 es bajo (target >=0.70). El modelo distingue mejor las clases ricas en gatos reales (feliz/dolor/atencion/descansando). Las 4 clases de Freesound (trinos/madre/apareamiento/caza) tienen ~34 cats cada una pero con 1 sola muestra por cat. Recomendado: mas datos reales + Freesound exhaustivo antes de activar en produccion."
   }
 }

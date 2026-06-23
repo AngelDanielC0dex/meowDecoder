@@ -87,9 +87,9 @@ web/src/
 │   ├── workers/     #   analysis.worker.ts + rpc.ts (protocolo tipado)
 │   └── telemetry/   #   logger estructurado, eventos, Web Vitals
 ├── presentation/    # React. Depende de application (nunca al revés).
-│   ├── components/  #   ui/ (primitivas a11y), audio/, results/, cats/, landing/
+│   ├── components/  #   ui/, audio/, results/, cats/, ads/, layout/, decor/
 │   ├── hooks/       #   useAnalysis, useCats, useHistory, useMediaPermission
-│   └── state/       #   analysis-store (Zustand)
+│   └── state/       #   analysis-store (Zustand), ThemeProvider (claro/oscuro)
 ├── i18n/            # next-intl: routing, messages es/en
 ├── content/         # Base de conocimiento tipada (vocalizaciones, FAQ, artículos)
 ├── app/             # App Router: [locale]/, api/, sitemap, robots, manifest
@@ -99,6 +99,10 @@ web/src/
 **Regla de dependencias (la única que importa):** `domain ← application ← {infrastructure, presentation}`. El dominio no sabe que existe React, IndexedDB ni ONNX. Se valida con `eslint-plugin-boundaries` en CI.
 
 **Convenciones:** archivos `kebab-case.ts`; componentes `PascalCase.tsx`; un export principal por archivo; funciones puras en `dsp/` y `domain/` (testeables sin mocks); los componentes visuales no contienen lógica de negocio — orquestan hooks que llaman a casos de uso.
+
+**Capa decorativa (`presentation/components/decor/`):** piezas puramente visuales y `aria-hidden`, sin lógica ni datos — `PawBackground` (fondo de huellas animado global, tinte `--paw-color` por tema), `Paw` (glifo SVG reutilizable), `CatLogo` (wordmark), `CatFace` (gato del hero) y `RopeCat` (gato colgando del navbar en la landing). Las animaciones provenientes de SCSS se **compilan a CSS Modules** estáticos (el proyecto no usa Sass): los `@for`/`@mixin`/funciones de color de Sass se expanden a keyframes y hex fijos, y cualquier reset global se *scopea* al componente. Todas respetan `prefers-reduced-motion` y animan solo `opacity/transform` (GPU).
+
+**Theming:** origen único de verdad en `globals.css` (`@theme` tokens + remapeo bajo `.dark`). La paleta de marca es "rosa almohadilla" (acento AA sobre blanco); el tema claro/oscuro/sistema lo resuelve `state/ThemeProvider` aplicando `.dark` en `<html>` con un script anti-FOUC inline. Las utilidades existentes (`bg-surface`, `text-ink-*`, `border-brand-*`) se adaptan solas. La landing usa secciones a `100svh` con `scroll-snap` suave + `SectionDots`.
 
 ---
 
@@ -123,19 +127,28 @@ Decode/resample en main thread (APIs nativas async, no bloquean); todo lo demás
 
 ## 5. Taxonomía de clasificación
 
-Clases v1 (acústicamente separables y útiles para el usuario): `meow`, `purr`, `trill`, `hiss`, `growl`, `yowl`, `unknown`. Cada clase lleva interpretaciones contextuales (no traducciones) en `content/`, reutilizadas por la UI de resultados y por las páginas SEO — una sola fuente de verdad bilingüe.
+Clases v2 (10 estados del modelo + `unknown` a nivel de producto): `feliz_contento`, `trinos`, `enfadado`, `pelea`, `llamada_madre`, `llamada_apareamiento`, `dolor`, `descansando`, `advertencia`, `atencion`. `unknown` NO es una salida del modelo: es una política de producto aplicada por umbrales de confianza. (`caza` se fusionó en `trinos` y ya no existe como clase.) Cada clase lleva interpretaciones contextuales y 20 frases aleatorias en `content/state-phrases.ts`, reutilizadas por la UI de resultados y por las páginas SEO. Las frases seleccionan aleatoriamente con `Math.random()` para dar variedad sin repetición.
 
 `unknown` es una clase de primer nivel: si la señal es ambigua, el producto lo dice. La honestidad sobre la incertidumbre es requisito de producto (y ventaja de confianza frente a competidores que "siempre saben").
 
+**Mapeo desde v1 (6 clases acústicas):**
+- meow → atencion (o llamada_madre, según contexto)
+- purr → feliz_contento O descansando (contexto-dependiente; suavizado temporal resuelve la ambigüedad)
+- trill → trinos
+- hiss → advertencia
+- growl → enfadado (o pelea)
+- yowl → llamada_apareamiento O dolor (contexto-dependiente)
+
 ## 6. Estrategia ML
 
-- **Enfoque:** clasificación supervisada multiclase sobre log-mel spectrograms (64 mels × ~96 frames, 1.5 s) con CNN pequeña (~300k params). Transfer learning desde YAMNet/PANNs queda como evolución si la CNN se queda corta.
-- **Datos MVP:** CatMeows (Zenodo, ~440 muestras etiquetadas por contexto), Meowsic, recortes con licencia de AudioSet (clase "Cat"). Augmentación: time-shift, ruido doméstico, pitch ±1 semitono, SpecAugment.
-- **Validación:** split estratificado por *gato emisor* (no por muestra — evita fuga de identidad), 5-fold CV dada la escasez.
-- **Métricas:** principal **macro-F1** (clases desbalanceadas: hiss/growl son raras); secundaria **ECE** (calibración — la confianza mostrada debe significar algo). Calibración por temperature scaling post-entrenamiento.
-- **Incertidumbre:** umbral de confianza + margen top1−top2; bajo umbral → `unknown` con explicación.
-- **Personalización por gato (diseño, no implementado):** el feedback corregido por gato alimenta (a) priors bayesianos por gato sobre las probabilidades del modelo global — barato y efectivo a corto plazo; (b) a futuro, fine-tuning de la última capa con muestras del gato. Cada corrección se almacena con features + embedding para habilitar ambas vías.
-- **Versionado:** tabla `model_versions` + manifest JSON servido estáticamente; el frontend negocia versión por hash → actualizar modelo nunca rompe el cliente (el formato de entrada/salida está versionado en el manifest).
+- **Enfoque:** Transfer learning con YAMNet (entrenado en AudioSet, 2M+ clips) como extractor de características congelado. La cabeza densa (~660K params) se entrena sobre los 1024-dim embeddings con validación LOCO (Leave-One-Cat-Out). El suavizado temporal EMA sobre 3 segundos resuelve la ambigüedad purr (felicidad vs descanso vs dolor).
+- **Arquitectura:** YAMNet (congelado) → mean pooling → Dense(512) → BN → ReLU → Dropout(0.4) → Dense(256) → BN → ReLU → Dropout(0.3) → Dense(11) → Softmax. Dos modelos ONNX en producción: `yamnet.onnx` (~14 MB) + `meow_decoder_head_int8.onnx` (~650 KB).
+- **Datos:** Pandeya Cat Sound Classification V2 (12 GB, 10 categorías), CatMeows (440 muestras, 21 gatos), Meow-10K (10K+ muestras), complementados con Freesound API para clases minoritarias.
+- **Validación:** LOCO (Leave-One-Cat-Out) — el modelo nunca ve datos del mismo gato en train y validation simultáneamente, evitando fuga de identidad.
+- **Métricas:** principal **macro-F1** (clases desbalanceadas); secundaria **ECE** (calibración). Target por clase: ≥0.73, con advertencia ≥0.92.
+- **Incertidumbre:** umbral de confianza + margen top1−top2 + suavizado temporal EMA; bajo umbral → `unknown` con explicación.
+- **Personalización por gato (diseño, no implementado):** el feedback corregido por gato alimenta priors bayesianos. Cada corrección se almacena con features + embedding para habilitar fine-tuning futuro.
+- **Versionado:** `schemaVersion: 2` en manifest JSON; el frontend negocia versión → actualizar modelo nunca rompe el cliente.
 
 ## 7. SEO técnico y programático
 
@@ -143,7 +156,7 @@ Clases v1 (acústicamente separables y útiles para el usuario): `meow`, `purr`,
 - `generateMetadata` por página/locale: title, description, canonical, `hreflang` (es/en/x-default), Open Graph, Twitter Cards.
 - JSON-LD: `WebApplication` (home), `FAQPage`, `Article` + `BreadcrumbList` (contenido).
 - `sitemap.ts` y `robots.ts` generados con ambos locales.
-- **SEO programático con valor real:** páginas `/[locale]/sounds/[type]` (6 vocalizaciones × 2 idiomas) generadas desde la base de conocimiento curada — contenido único, FAQ propias, breadcrumbs, enlazado interno hacia el analizador. No se generan combinaciones vacías (raza × edad × contexto se añadirá solo cuando exista contenido curado que lo justifique).
+- **SEO programático con valor real:** páginas `/[locale]/sounds/[type]` (11 vocalizaciones × 2 idiomas) generadas desde la base de conocimiento curada — contenido único, FAQ propias, breadcrumbs, enlazado interno hacia el analizador. No se generan combinaciones vacías (raza × edad × contexto se añadirá solo cuando exista contenido curado que lo justifique).
 - Presupuesto de rendimiento: landing LCP < 1.5 s, JS inicial < 90 kB gzip, CLS ≈ 0 (dimensiones reservadas), INP < 200 ms (cómputo en workers).
 
 ## 8. Seguridad y privacidad
@@ -173,9 +186,30 @@ Logger estructurado propio (JSON, niveles, contexto) → consola en dev, endpoin
 
 1. **E1 — Fundación** (esta sesión): scaffolding, dominio, pipeline DSP+workers, heurístico, IndexedDB, UI de análisis, i18n, landing SEO, esquema backend, pipeline Python, tests críticos, CI, docs.
 2. **E2 — Modelo real:** ejecutar entrenamiento con CatMeows+augmentación, publicar ONNX v1, activar OnnxEngine tras A/B contra heurístico, test de paridad en CI.
-3. **E3 — Cuentas y sync:** Auth.js en producción, sync IndexedDB↔Postgres (last-write-wins por entidad), donación de audio opt-in.
+3. **E3 — Cuentas y sync:** Auth.js v5 cableado (magic link por email + DrizzleAdapter; tablas `accounts`/`auth_sessions`/`verification_tokens`; páginas en `app/auth/*` fuera del segmento `[locale]`). El gating registrado/anónimo ya está implementado y se activa con `NEXT_PUBLIC_ACCOUNTS_ENABLED=true`: los anónimos pueden analizar pero deben iniciar sesión para corregir o tener historial (componente `SignInGate`, hook `useAuth`). **Pendiente de E3:** sync IndexedDB↔Postgres (last-write-wins por entidad) y donación de audio opt-in (endpoint de subida + job de export al pipeline de entrenamiento).
 4. **E4 — Monetización:** Stripe + flags premium, exportación, multi-gato.
 5. **E5 — Profundidad:** personalización por gato (priors), monitor continuo, expansión de contenido SEO (pilares + glosario), e2e Playwright completo.
+
+## 12bis. Subsistemas de cuenta, IA, anuncios y legal (jun 2026)
+
+Añadidos sobre la base local-first. La fuente de tareas pendientes/hechas es `ROADMAP.md`.
+
+- **Auth (Auth.js v5)** — `server/auth/config.ts` (DrizzleAdapter + Nodemailer/Resend, sesión de BD), `getServerUserId()` como única puerta de autorización servidor, páginas en `app/auth/*` (fuera de `[locale]`, excluidas del middleware), cliente `AuthSessionProvider` + `useAuth`. Se activa con `NEXT_PUBLIC_ACCOUNTS_ENABLED=true`.
+- **Niveles de acceso (`useAccess` — fuente única)** — modelo de 3 niveles: **anónimo** (analiza puntual, NO persiste — `analyzeAudio` recibe `persist`; `AnalyzePanel` oculta selector de gato/keepAudio y muestra aviso), **registrado** (+ historial, correcciones, **historial médico**), **premium** (+ asistente IA; requiere `premium.enabled` + plan). `isRegistered = accountsEnabled ? isAuthenticated : true` (modo local preserva todas las funciones on-device).
+- **Gating** — `SignInGate` (contextos `history`/`cats`/`correct`/`medical`/`assistant`). Anónimo: el resultado se muestra pero no se guarda; corregir y médico piden cuenta. `FeedbackForm` gatea con `accountsEnabled && !isAuthenticated`.
+- **Asistente IA (premium)** — un servicio, dos modos (`medical`/`meow`): `server/ai/assistant.ts` (schema zod + guardarraíles: informativo, NO veterinario) + `app/api/assistant/route.ts` (auth + rate-limit 8h/20d + tope de tokens). RAG por **inyección de contexto** (sin vector DB). UI `AssistantChat` con `lockedMode`, **embebida** en `/history` (meow) y `/medical` (medical); se renderiza solo si `premium.enabled` (si está OFF, el chatbot no aparece). No hay página `/assistant` standalone. Proveedor: GPT-4o-mini (`OPENAI_API_KEY`, solo servidor).
+- **Anuncios** — landing 100% sin ads; rails laterales solo en `analyze`/`history` vía `AdRailsLayout` (xl+, sin CLS). `usePremium()` oculta todos los ads para Premium (fuente única). Contextual en resultados (`ContextualAd`).
+- **Premium** — **landing condicional**: con `premium.enabled` ON la landing muestra `PremiumPlans` (showcase); con OFF muestra `FreeTiers` (comparativa Sin cuenta vs Con cuenta gratis, sin precio). `usePremium()` se conectará al `plan` de sesión cuando exista billing (Stripe).
+- **Legal** — `content/legal.ts` (Términos+Privacidad bilingües), páginas `app/[locale]/legal/[doc]`, enlaces en footer, **aceptación obligatoria** en signin. Disclaimer clave: IA informativa, NO veterinaria.
+- **Perfiles de gato** — `cat.ts` con `traits`, `microchip` (validación ISO 11784/11785, `isValidMicrochip`) y `photoObjectKey` (esquema listo para foto). Multi-gato sin límite; rejilla responsive.
+- **Frase de estado** — `StatePhrase` (frase por estado al descifrar y al corregir); persistida por `AnalysisSession.phraseSeed` (entero, no texto) → consistente en resultado e historial.
+- **SEO** — JSON-LD `WebApplication`+`Organization`+`WebSite`+`FAQPage` en landing (FAQ visible con `<details>`, `content/faq.ts`), `BreadcrumbList` en legal y `/sounds`, OG/favicon generados (`opengraph-image.tsx`, `icon.tsx`), `viewport`/themeColor, canonical+hreflang, `robots.ts`+`sitemap.ts` (privadas excluidas, legales incluidas). Microdatos: se usa **JSON-LD** (recomendado por Google), no `itemprop` redundante.
+- **Historial médico / vacunas** — `content/vaccines.ts` (catálogo + reglas por región: legal/recomendada/opcional + WSAVA core), store IndexedDB v3 `vaccinations`, `VaccinationRepository`, `VaccineChecklist` (**registrado**, selector región, marcar puesta) en `/[locale]/medical`. **Carnet descargable/imprimible** (window.print + `@media print`) + export JSON.
+- **Timeline** — `HistoryList` (`role="feed"`, `<time>`): reproducir/descargar audio, frase por estado (seed estable) y corregir desde el historial.
+- **Estados de anuncios** — `InterstitialAd` (free-only): ad de carga durante la predicción y ad obligatorio en corrección con la frase; Premium sin ads (`usePremium`), sin CLS.
+- **Panel de administración** — `/[locale]/admin` (server-gated). Acceso por allowlist `ADMIN_EMAILS` resuelta en servidor (`server/auth/admin.ts`: `getIsAdmin`/`requireAdmin`); no-admin → 404. Flags en tabla `feature_flags` resueltos por `getAllFlags`/`isEnabled` (override BD → default; env manda en `accounts.enabled`); `setFeatureFlagAction` re-verifica admin + Zod sobre `ADMIN_TOGGLEABLE_FLAGS`. Cliente: `FlagsProvider` (poblado por el layout) → `useFlags`; `usePremium` lee `premium.enabled` como interruptor maestro (un solo hook gatea todos los anuncios/premium). `premium.enabled` OFF por defecto (sin Stripe).
+- **Tema claro/oscuro** — `globals.css` con `@custom-variant dark (&:where(.dark,.dark *))` + override de tokens (`--color-surface`/`ink-*`/`brand-50/100/200` invierten bajo `.dark`; `brand-300..800` constantes para botones bg+texto blanco en ambos). `ThemeProvider` (system/light/dark, `localStorage` `meow-theme`, sigue al SO en vivo) + `THEME_INIT_SCRIPT` anti-FOUC en `<head>` de AMBOS layouts ([locale] y auth) + `<html suppressHydrationWarning>` + `colorScheme`/`themeColor` por esquema. `ThemeToggle` en `SiteHeader`. Cuidado con colores que NO deben invertir (banda oscura de la landing, scrim del menú, badges/alertas): usan constantes o variantes `dark:`.
+- **Tarjetas de presentación** — `/[locale]/cards` (registrado). `Cat` extendido (`birthDate`, `bio`, `cardTemplate`, `showHoroscope`); foto en almacén IndexedDB v4 `catPhotos` (blob local, borrado en cascada con el gato); `normalizeCat` da defaults a gatos antiguos. `domain/cat/zodiac.ts` (signo desde fecha, puro+testeado) + `catAgeYears`. UI `CardDesigner` + renderizador **canvas** `card-render.ts` (3 diseños classic/playful/elegant; una sola fuente para preview y descarga PNG, sin dependencias ni CORS). Horóscopo opcional (checkbox) con frase por signo en i18n (`zodiac`). i18n agnóstico en el renderer (recibe textos ya localizados). **Compartir + QR** (`card-share.ts` codifica los datos en base64url; `ShareCard` usa Web Share API con el PNG real donde se pueda + iconos sociales + QR (`qrcode`, local) que apuntan a la página pública **`/[locale]/card?d=…`** (`PublicCardView`, reconstruye la tarjeta sin foto, noindex pero crawleable para previews). La foto NO viaja en la URL/QR (es blob local).
 
 ## 13. Limitaciones conocidas
 

@@ -3,6 +3,7 @@ import type { Cat } from "@/domain/cat/cat";
 import type { AnalysisSession } from "@/domain/analysis/session";
 import type { FeedbackEntry } from "@/domain/feedback/feedback";
 import type { CatPriors } from "@/domain/analysis/cat-priors";
+import type { VaccinationRecord } from "@/domain/cat/vaccination";
 
 /**
  * IndexedDB schema. Migration strategy: monotonically increasing DB_VERSION;
@@ -41,10 +42,19 @@ export interface MeowDB extends DBSchema {
     key: string;
     value: { catId: string; priors: CatPriors };
   };
+  vaccinations: {
+    key: string;
+    value: VaccinationRecord;
+    indexes: { "by-cat": string };
+  };
+  catPhotos: {
+    key: string;
+    value: { catId: string; blob: Blob; updatedAt: number };
+  };
 }
 
 export const DB_NAME = "meowdecoder";
-export const DB_VERSION = 2;
+export const DB_VERSION = 4;
 
 let dbPromise: Promise<IDBPDatabase<MeowDB>> | null = null;
 
@@ -68,7 +78,16 @@ export function getDb(): Promise<IDBPDatabase<MeowDB>> {
       if (oldVersion < 2) {
         db.createObjectStore("catPriors", { keyPath: "catId" });
       }
-      // v3 — append future migrations BELOW this line, never modify above.
+      // v3 — medical log: administered-vaccine records per cat.
+      if (oldVersion < 3) {
+        const vaccinations = db.createObjectStore("vaccinations", { keyPath: "id" });
+        vaccinations.createIndex("by-cat", "catId");
+      }
+      // v4 — per-cat photo blob for the presentation card (local-first).
+      if (oldVersion < 4) {
+        db.createObjectStore("catPhotos", { keyPath: "catId" });
+      }
+      // v5 — append future migrations BELOW this line, never modify above.
     },
     blocked() {
       // Another tab holds an old version open; the UI treats persistence

@@ -38,7 +38,11 @@ const config = [
     ],
     rules: { "no-restricted-imports": "off" },
   },
-  { ignores: [".next/**", "node_modules/**", "drizzle/**", "public/**"] },
+  {
+    // Generated/build artifacts — never lint these. `next-env.d.ts` is emitted
+    // by Next and contains a triple-slash reference the TS rule would flag.
+    ignores: [".next/**", "next-env.d.ts", "node_modules/**", "drizzle/**", "public/**"],
+  },
 ];
 
 export default config;

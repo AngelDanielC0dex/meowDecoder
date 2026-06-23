@@ -1,0 +1,28 @@
+# Root .gitignore. The deployable app lives in web/ (which has its own
+# web/.gitignore for build output). This file keeps the heavy ML training assets,
+# Python environments and caches OUT of the repo. Intentionally NOT ignored: the
+# web app, its Drizzle migrations (web/drizzle/), the exported ONNX models in
+# web/public/models/, and the training *code* (training/scripts, training/src).
+
+# --- Python environments & caches ---
+**/.venv/
+**/__pycache__/
+*.pyc
+**/.pytest_cache/
+**/.ruff_cache/
+*.egg-info/
+
+# --- Training: datasets, intermediate caches, logs and model-training artifacts.
+# Large and regenerable; the web app uses the exported models in web/public/models
+# instead, so none of this is needed in the repo. ---
+training/.venv/
+training/data/
+training/quarantine/
+training/downloads/
+training/artifacts/
+training/autolabel_report.csv
+training/**/*.log
+
+# --- OS cruft ---
+.DS_Store
+Thumbs.db

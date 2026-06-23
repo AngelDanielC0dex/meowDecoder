@@ -19,4 +19,11 @@ export interface AnalysisSession {
   readonly classification: Classification;
   /** Key of the locally stored audio blob, if kept. */
   readonly audioKey: string | null;
+  /**
+   * Deterministic seed for picking the interpretation phrase. Stored (a tiny
+   * integer, not the phrase text) so the same session always shows the same
+   * phrase — in the result AND when revisited in history. Optional for sessions
+   * created before this field existed.
+   */
+  readonly phraseSeed?: number;
 }

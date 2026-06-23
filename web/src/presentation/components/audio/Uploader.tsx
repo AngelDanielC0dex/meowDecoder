@@ -3,7 +3,12 @@
 import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/presentation/components/ui/Button";
-import { ACCEPTED_AUDIO_EXTENSIONS, MAX_UPLOAD_BYTES } from "@/infrastructure/audio/decode";
+import {
+  ACCEPTED_AUDIO_EXTENSIONS,
+  MAX_DURATION_S,
+  MAX_UPLOAD_BYTES,
+  MAX_UPLOAD_MB,
+} from "@/infrastructure/audio/decode";
 
 export function Uploader({ onSelected }: { onSelected: (blob: Blob) => void }) {
   const t = useTranslations("analyze");
@@ -13,8 +18,12 @@ export function Uploader({ onSelected }: { onSelected: (blob: Blob) => void }) {
 
   const handleFile = (file: File | undefined) => {
     if (!file) return;
+    if (!file.type.startsWith("audio/")) {
+      setError(t("errorWrongFormat"));
+      return;
+    }
     if (file.size > MAX_UPLOAD_BYTES) {
-      setError(t("errorGeneric"));
+      setError(t("errorFileTooLarge", { size: MAX_UPLOAD_MB }));
       return;
     }
     setError(null);
@@ -49,8 +58,11 @@ export function Uploader({ onSelected }: { onSelected: (blob: Blob) => void }) {
           onChange={(e) => handleFile(e.target.files?.[0])}
         />
       </div>
+      <p className="text-xs text-ink-600">
+        {t("audioLimitsHint", { seconds: MAX_DURATION_S, size: MAX_UPLOAD_MB })}
+      </p>
       {error && (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="text-sm text-red-700 dark:text-red-300">
           {error}
         </p>
       )}

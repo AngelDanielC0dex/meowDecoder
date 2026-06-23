@@ -1,0 +1,51 @@
+/* Animated paw-print backdrop. A single fixed layer behind all content; paws
+   fade and gently scale in/out on staggered cycles so they "appear and
+   disappear" as ambient texture. Only opacity/transform animate (GPU-friendly,
+   no layout/paint thrash, no CLS). Tinted with --paw-color (set per theme in
+   globals.css). Fully decorative: the layer is aria-hidden + pointer-events:none. */
+
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  pointer-events: none;
+  color: rgb(var(--paw-color));
+}
+
+.paw {
+  position: absolute;
+  opacity: 0;
+  transform: scale(0.85) rotate(var(--rot, 0deg));
+  animation-name: pawFade;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: opacity, transform;
+}
+
+.paw svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes pawFade {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.85) rotate(var(--rot, 0deg));
+  }
+  50% {
+    opacity: var(--peak, 0.1);
+    transform: scale(1) rotate(var(--rot, 0deg));
+  }
+}
+
+/* Reduced motion: hold the paws faint and still — texture without movement. */
+@media (prefers-reduced-motion: reduce) {
+  .paw {
+    animation: none;
+    opacity: calc(var(--peak, 0.1) * 0.8);
+    transform: scale(1) rotate(var(--rot, 0deg));
+  }
+}

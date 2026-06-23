@@ -1,20 +1,21 @@
+import { auth } from "./config";
+
 /**
- * Resolves the authenticated user id for server-side writes, or null when there
- * is no session. Stubbed until Auth.js v5 is wired (E3 — accounts + sync).
+ * Resolves the authenticated user id for server-side writes, or `null` when
+ * there is no session. This is the single server-side authorization gate:
+ * every server action / route handler that persists user-owned data (feedback,
+ * cats, history) MUST call this and reject anonymous (null) callers.
  *
- * Wiring steps to enable server persistence of per-cat history/feedback:
- *  1. Add Auth.js adapter tables (accounts, auth_sessions, verification_tokens)
- *     to db/schema.ts and generate a migration: `npm run db:generate`.
- *     (Name them so they don't collide with the existing `sessions` table,
- *     which holds ANALYSIS sessions, not auth sessions.)
- *  2. Create auth.ts with DrizzleAdapter + an email magic-link provider.
- *  3. Replace the body below with:
- *        const session = await auth();
- *        return session?.user?.id ?? null;
- *  4. Ensure analysis sessions are synced server-side BEFORE inserting feedback
- *     (feedback.sessionId is a FK → sessions.id).
- *  5. Flip the "accounts.enabled" feature flag.
+ * Backed by Auth.js (see ./config.ts). Returns null safely when auth is not yet
+ * configured (no DATABASE_URL / AUTH_SECRET), so anonymous use never writes to
+ * the DB and the app keeps working without accounts.
  */
 export async function getServerUserId(): Promise<string | null> {
-  return null;
+  try {
+    const session = await auth();
+    return session?.user?.id ?? null;
+  } catch {
+    // auth() can throw if the env isn't configured yet — treat as anonymous.
+    return null;
+  }
 }
