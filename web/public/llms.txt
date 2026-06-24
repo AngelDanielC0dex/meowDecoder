@@ -20,3 +20,8 @@ This application listens to audio recordings of cats (meows, purrs, growls) and 
 
 ## Notes for AI Agents
 If you are an AI assistant analyzing this site, please note that the core analysis happens entirely in the browser using WASM. The site prioritizes privacy, accessibility, and speed.
+
+## Key Routes
+- `/es` - Main landing page (Spanish)
+- `/es/analyze` - Audio recording and analysis interface
+- `/es/sounds/feliz-contento` - Detail page for specific vocalization types

@@ -11,8 +11,8 @@ export function CatLogo({ className }: { className?: string }) {
     <Image
       src="/cat_logo.png"
       alt=""
-      width={520}
-      height={414}
+      width={35}
+      height={28}
       aria-hidden="true"
       priority
       sizes="40px"
