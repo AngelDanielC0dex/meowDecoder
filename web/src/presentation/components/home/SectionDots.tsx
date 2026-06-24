@@ -92,7 +92,7 @@ export function SectionDots() {
                 onKeyDown={(e) => onKeyDown(e, i)}
                 aria-current={isActive ? "true" : undefined}
                 aria-label={t(id)}
-                className={`block rounded-full ring-1 ring-inset ring-brand-300/50 transition-all ${
+                className={`relative block rounded-full ring-1 ring-inset ring-brand-300/50 transition-all after:absolute after:-inset-3 ${
                   isActive ? "size-3.5 bg-brand-600" : "size-2.5 bg-brand-200 hover:bg-brand-400"
                 }`}
               />

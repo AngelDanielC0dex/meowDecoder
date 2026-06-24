@@ -103,10 +103,12 @@
   position: absolute;
   top: 0;
   left: 0;
-  height: 0;
+  height: 100%;
   width: 100%;
   border-radius: 0 0 50% 50% / 0 0 40% 40%;
   background: var(--cat-eyelid);
+  transform-origin: top;
+  transform: scaleY(0);
   animation: catBlink 4s infinite ease-in;
 }
 .eye::before {
@@ -235,22 +237,22 @@
 
 @keyframes catBlink {
   0% {
-    height: 0;
+    transform: scaleY(0);
   }
   90% {
-    height: 0;
+    transform: scaleY(0);
   }
   92.5% {
-    height: 100%;
+    transform: scaleY(1);
   }
   95% {
-    height: 0;
+    transform: scaleY(0);
   }
   97.5% {
-    height: 100%;
+    transform: scaleY(1);
   }
   100% {
-    height: 0;
+    transform: scaleY(0);
   }
 }
 

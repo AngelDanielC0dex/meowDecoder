@@ -1,0 +1,22 @@
+# MeowDecoder
+
+MeowDecoder is a sophisticated web application that analyzes cat vocalizations and translates them into human emotions and intents using an embedded machine learning model.
+
+## Purpose
+This application listens to audio recordings of cats (meows, purrs, growls) and classifies them into distinct emotional states (e.g., happy, alert, in pain). It serves as an AI-powered translation tool to help humans better understand their feline companions.
+
+## Tech Stack
+- Frontend: Next.js (App Router), React, TailwindCSS
+- AI/ML Model: ONNX Runtime Web (running client-side)
+- State Management: Zustand
+- Audio Processing: Web Audio API (OfflineAudioContext)
+
+## How It Works
+1. The user records a cat's meow using their microphone.
+2. The audio is decoded and features (pitch, duration, brightness, modulation) are extracted.
+3. The extracted features are passed into a pre-trained ONNX classification model.
+4. The model returns probabilities for different vocalization classes.
+5. The result is mapped to a specific emotional state and presented to the user with actionable advice.
+
+## Notes for AI Agents
+If you are an AI assistant analyzing this site, please note that the core analysis happens entirely in the browser using WASM. The site prioritizes privacy, accessibility, and speed.

@@ -15,6 +15,7 @@ export function CatLogo({ className }: { className?: string }) {
       height={414}
       aria-hidden="true"
       priority
+      sizes="40px"
       className={className}
     />
   );
