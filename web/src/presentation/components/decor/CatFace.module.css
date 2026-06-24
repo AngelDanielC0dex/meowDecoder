@@ -164,9 +164,22 @@
   left: 50%;
   height: 6%;
   width: 10%;
-  background: var(--cat-muzzle);
+  background: var(--cat-ear); /* Changed to pink */
   transform: translateX(-50%);
   border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+}
+
+/* Subtle dip at the top center to suggest a heart shape */
+.muzzle::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30%;
+  height: 50%;
+  background: var(--cat-face);
+  border-radius: 50%;
 }
 
 /* Whiskers: six fine lines, three per side, converging at a vertex just

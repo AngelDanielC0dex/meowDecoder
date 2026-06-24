@@ -30,10 +30,8 @@ export function CatFace({
           <div className={styles.eyePupil} />
         </div>
         <div className={styles.muzzle} />
-        <div className={`${styles.whisker} ${styles.whiskerLeft} ${styles.whiskerLeft1}`} />
         <div className={`${styles.whisker} ${styles.whiskerLeft} ${styles.whiskerLeft2}`} />
         <div className={`${styles.whisker} ${styles.whiskerLeft} ${styles.whiskerLeft3}`} />
-        <div className={`${styles.whisker} ${styles.whiskerRight} ${styles.whiskerRight1}`} />
         <div className={`${styles.whisker} ${styles.whiskerRight} ${styles.whiskerRight2}`} />
         <div className={`${styles.whisker} ${styles.whiskerRight} ${styles.whiskerRight3}`} />
       </div>
