@@ -182,23 +182,23 @@
   border-radius: 1px;
 }
 
-/* Left side: vertex at the LEFT edge of the muzzle (45%). The element's
-   right edge sits at 45%; the line extends leftward into open air. */
+/* Left side: vertex at the LEFT edge of the muzzle. The element's
+   right edge sits at 55%; the line extends leftward into open air. */
 .whiskerLeft {
-  right: 45%;
+  right: 55%;
   transform-origin: right center;
 }
 .whiskerLeft1 {
-  top: 70%;
-  transform: rotate(-20deg);
+  top: 65%;
+  transform: rotate(15deg);
 }
 .whiskerLeft2 {
-  top: 74%;
+  top: 72%;
   transform: rotate(0deg);
 }
 .whiskerLeft3 {
-  top: 78%;
-  transform: rotate(20deg);
+  top: 79%;
+  transform: rotate(-15deg);
 }
 
 /* Right side: vertex at the RIGHT edge of the muzzle (55%). The element's
@@ -208,16 +208,16 @@
   transform-origin: left center;
 }
 .whiskerRight1 {
-  top: 70%;
-  transform: rotate(-20deg);
+  top: 65%;
+  transform: rotate(-15deg);
 }
 .whiskerRight2 {
-  top: 74%;
+  top: 72%;
   transform: rotate(0deg);
 }
 .whiskerRight3 {
-  top: 78%;
-  transform: rotate(20deg);
+  top: 79%;
+  transform: rotate(15deg);
 }
 
 @keyframes catBlink {
