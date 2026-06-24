@@ -11,7 +11,11 @@ import { Button } from "@/presentation/components/ui/Button";
 import { useAuth } from "@/presentation/hooks/useAuth";
 import { SignInGate } from "@/presentation/components/auth/SignInGate";
 import { StatePhrase } from "@/presentation/components/results/StatePhrase";
-import { FeedbackForm } from "@/presentation/components/results/FeedbackForm";
+import dynamic from "next/dynamic";
+
+const FeedbackForm = dynamic(() => import("@/presentation/components/results/FeedbackForm"), {
+  loading: () => <div className="h-48 animate-pulse rounded-xl bg-surface/50" />,
+});
 
 /** Plays a stored audio blob once, revoking the object URL when it ends. */
 async function playStoredAudio(audioKey: string): Promise<void> {

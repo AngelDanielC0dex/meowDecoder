@@ -18,7 +18,7 @@ import { InterstitialAd } from "@/presentation/components/ads/InterstitialAd";
 import { StatePhrase } from "./StatePhrase";
 import type { AppLocale } from "@/i18n/routing";
 
-export function FeedbackForm({
+export default function FeedbackForm({
   session,
   onCorrected,
 }: {

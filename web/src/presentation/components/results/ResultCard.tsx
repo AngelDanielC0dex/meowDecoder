@@ -7,7 +7,11 @@ import type { CertaintyLevel } from "@/domain/analysis/classification";
 import { getVocalizationByClass } from "@/content/vocalizations";
 import { formatProbability, formatHz, formatDuration } from "@/presentation/formatters";
 import { ConfidenceBar } from "./ConfidenceBar";
-import { FeedbackForm } from "./FeedbackForm";
+import dynamic from "next/dynamic";
+
+const FeedbackForm = dynamic(() => import("./FeedbackForm"), {
+  loading: () => <div className="h-48 animate-pulse rounded-xl bg-surface/50" />,
+});
 import { ContextualAd } from "./ContextualAd";
 import { StatePhrase } from "./StatePhrase";
 import { Button } from "@/presentation/components/ui/Button";

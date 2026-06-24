@@ -42,7 +42,7 @@ export function ContextualAd({
   return (
     <aside
       aria-label={t("sponsored")}
-      className="my-6 rounded-xl border border-brand-200 bg-brand-50 p-4 shadow-sm"
+      className="my-6 min-h-[120px] rounded-xl border border-brand-200 bg-brand-50 p-4 shadow-sm"
     >
       <div className="flex items-center gap-3">
         <span className="text-3xl" aria-hidden="true">{emoji}</span>
